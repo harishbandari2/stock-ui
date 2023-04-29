@@ -1,0 +1,138 @@
+.sidebar-xs {
+  padding: 0 !important;
+}
+
+.on-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  font-size: 3rem;
+  text-shadow: 1px 1px 4px rgba(26, 188, 156, 0.588);
+  text-align: center;
+}
+
+.on-form {
+  position: relative;
+  top: 30%;
+  //   left: 50%;
+}
+
+.on-image span {
+  font-size: 3.5rem;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+  color: #222;
+  background-color: transparent;
+  border-radius: 0;
+  border-bottom: 2px solid #222;
+}
+
+.nav-link {
+  color: #222;
+  outline: none;
+}
+
+.nav-link:hover {
+  color: #1abc9c !important;
+}
+
+.card-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+// .btn-primary {
+//     background-color: #1abc9c !important;
+//     color: #fff;
+//     border-color: #19ac8e !important;
+// }
+
+.btn-primary:hover {
+  color: #fff;
+  background-color: #19ac8e !important;
+  border-color: #19ac8e !important;
+}
+
+.btn-primary.focus,
+.btn-primary:focus {
+  color: #fff;
+  background-color: #1abc9c !important;
+  border-color: #19ac8e !important;
+  box-shadow: 0 0 0 0.2rem rgba(26, 188, 156, 0.513) !important;
+}
+
+.btn-image:hover,
+.btn-image:focus {
+  color: #fff;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+@media (max-width: 767px) {
+  .on-image span {
+    font-size: 2.5rem;
+  }
+
+  .mt-sm-3 {
+    margin-top: 1rem;
+  }
+
+  .card-container {
+    margin-bottom: 1rem;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 85%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .arrow span {
+    display: block;
+    width: 30px;
+    height: 30px;
+    border-bottom: 5px solid #1abc9c;
+    border-right: 5px solid #1abc9c;
+    transform: rotate(45deg);
+    margin: -10px;
+    animation: animate 2s infinite;
+  }
+
+  .arrow span:nth-child(2) {
+    animation-delay: -0.2s;
+  }
+
+  .arrow span:nth-child(3) {
+    animation-delay: -0.4s;
+  }
+
+  @keyframes animate {
+    0% {
+      opacity: 0;
+      transform: rotate(45deg) translate(-20px, -20px);
+    }
+
+    50% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+      transform: rotate(45deg) translate(20px, 20px);
+    }
+  }
+}
+
+.form-control {
+  width: 100%;
+  // padding-left: 2rem !important;
+  border: transparent !important;
+  border-bottom: 1px solid #ddd !important ;
+}

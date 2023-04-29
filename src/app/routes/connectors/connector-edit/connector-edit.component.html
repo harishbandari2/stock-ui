@@ -1,0 +1,559 @@
+<div class="page-header page-header-light">
+  <!-- <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Connector</span> - Connect</h4>
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+
+    <div class="header-elements d-none">
+      <div class="d-flex justify-content-center">
+        <a class="btn btn-link btn-float text-default"
+          ><i class="icon-bars-alt text-primary"></i><span>Statistics</span></a
+        >
+        <a class="btn btn-link btn-float text-default"
+          ><i class="icon-calculator text-primary"></i> <span>Invoices</span></a
+        >
+        <a class="btn btn-link btn-float text-default"
+          ><i class="icon-calendar5 text-primary"></i> <span>Schedule</span></a
+        >
+      </div>
+    </div>
+  </div> -->
+
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+        <a href="widgets_content.html" class="breadcrumb-item">Widgets</a>
+        <span class="breadcrumb-item active">Content</span>
+      </div>
+
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+
+    <div class="header-elements d-none">
+      <div class="breadcrumb justify-content-center">
+        <a class="breadcrumb-elements-item">
+          <i class="icon-comment-discussion mr-2"></i>
+          Support
+        </a>
+
+        <div class="breadcrumb-elements-item dropdown p-0">
+          <a class="breadcrumb-elements-item dropdown-toggle" data-toggle="dropdown">
+            <i class="icon-floppy-disk mr-2"></i>
+            Save
+          </a>
+
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item"><i class="icon-user-lock"></i> Account security</a>
+            <a class="dropdown-item"><i class="icon-statistics"></i> Analytics</a>
+            <a class="dropdown-item"><i class="icon-accessibility"></i> Accessibility</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item"><i class="icon-gear"></i> All settings</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <!-- Inner container -->
+  <div class="d-md-flex align-items-md-start">
+    <div
+      class="sidebar sidebar-light bg-transparent sidebar-component sidebar-component-left wmin-300 border-0 shadow-0 sidebar-expand-md"
+    >
+      <!-- Sidebar content -->
+      <div class="sidebar-content">
+        <!-- Navigation -->
+        <div class="card">
+          <div class="card-body text-center card-img-top">
+            <div class="card-img-actions d-inline-block mb-3">
+              <img
+                class="img-fluid rounded-circle"
+                src="assets/images/logo/amazon-s3.svg"
+                width="78"
+                height="78"
+                alt=""
+              />
+            </div>
+
+            <!-- <li class="nav-item-divider"></li> -->
+            <a class="btn bg-indigo-400 btn-block legitRipple pointer"
+              ><i class="icon-plus-circle2 mr-2"></i>New Connector</a
+            >
+          </div>
+
+          <div class="card-body p-0">
+            <ul class="nav nav-sidebar mb-2">
+              <li class="nav-item-header">Connectors</li>
+              <li class="nav-item pointer" *ngFor="let conn of connectors" (click)="activeConnect(conn)">
+                <a class="nav-link legitRipple" data-toggle="tab">
+                  <i class="icon-power-cord"></i>
+                  {{ conn.name }}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- /sidebar content -->
+    </div>
+    <!-- Left content -->
+    <div class="tab-content w-100">
+      <div class="tab-pane fade active show">
+        <div class="card">
+          <div class="card-body">
+            <form [formGroup]="configForm">
+              <div class="row">
+                <div class="form-group col-lg-3">
+                  <div class="label-section">
+                    <label> <span class="text-danger">*</span>Name</label>
+                    <input type="text" formControlName="name" class="form-control" placeholder="Enter name" />
+                  </div>
+                </div>
+                <div class="form-group  col-lg-3">
+                  <div class="label-section">
+                    <label> <span class="text-danger">*</span>Connection</label>
+                    <input
+                      type="text"
+                      formControlName="description"
+                      class="form-control"
+                      placeholder="Enter connection"
+                    />
+                  </div>
+                </div>
+                <div class="form-group  col-lg-3">
+                  <div class="label-section">
+                    <label> <span class="text-danger">*</span>Action</label>
+                    <select
+                      formControlName="action"
+                      class="form-control form-control-sm"
+                      (change)="changeAction($event.target.value)"
+                    >
+                      <option value="null">Choose Action</option>
+                      <option *ngFor="let db of db.actions" value="{{ db }}">{{ db }}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group col-lg-3">
+                  <div class="label-section">
+                    <button
+                      (click)="excuteSql()"
+                      type="button"
+                      class="btn btn-outline-primary  mr-2"
+                      style="top:26px; text-transform: none;"
+                    >
+                      <i class="icon-play"></i> <span class="d-none d-lg-inline-block ml-2">Execute</span>
+                      <div class="legitRipple-ripple"></div>
+                    </button>
+                  </div>
+
+                  <!-- <button
+                      (click)="save()"
+                      type="button"
+                      class="btn btn-outline alpha-success text-success-800 border-success-600 legitRipple"
+                    >
+                      <i class="icon-floppy-disk"></i> <span class="d-none d-lg-inline-block ml-2">Save</span>
+                      <div class="legitRipple-ripple"></div>
+                    </button> -->
+                </div>
+              </div>
+            </form>
+          </div>
+          <ul class="panel">
+            <li style="width: 20%;">
+              <div class="header">
+                <div class="title">Tables</div>
+              </div>
+              <div class="in-content">
+                <div (scroll)="adjustPatches($event)" *ngIf="mappingFields?.inputNodes">
+                  <tree-root
+                    #treeIn
+                    [nodes]="mappingFields.inputNodes"
+                    [options]="options"
+                    (toggleExpanded)="toggleExpanded($event, 'source')"
+                  >
+                    <ng-template #treeNodeTemplate let-node let-index="index">
+                      <span class="custom-node">
+                        <app-source
+                          [node]="{
+                            key: node.data.key,
+                            title: node.data.title,
+                            dataElementType: node.data.dataElementType
+                          }"
+                        >
+                        </app-source>
+                      </span>
+                      <app-source-point [key]="node.data.key"></app-source-point>
+                    </ng-template>
+                  </tree-root>
+                </div>
+              </div>
+            </li>
+            <li style="width: 50%;">
+              <div class="header">
+                <div class="title">Query</div>
+              </div>
+              <div class="formtree in-content" (scroll)="adjustPatches($event)" *ngIf="mappingFields?.outputNodes">
+                <tree-root
+                  #tree
+                  [nodes]="mappingFields.outputNodes"
+                  [options]="options"
+                  (toggleExpanded)="toggleExpanded($event, 'sink')"
+                >
+                  <ng-template #treeNodeTemplate let-node let-index="index">
+                    <app-sink-point [key]="node.data.key"></app-sink-point>
+                    <span class="custom-node" (click)="nodeClick(node.data.key)">
+                      <app-sink
+                        [node]="{
+                          key: node.data.key,
+                          title: node.data.title,
+                          dataElementType: node.data.dataElementType,
+                          mapper: node.data.pickList ? false : true,
+                          single: true
+                        }"
+                      >
+                      </app-sink>
+                      <span class="text-danger" *ngIf="node.data.required">* </span>
+                      <div class="btn-group position-static" ngbDropdown *ngIf="node.data.type == 'conditionGroup'">
+                        <button
+                          type="button"
+                          class="btn btn-link p-0"
+                          data-toggle="dropdown"
+                          aria-expanded="false"
+                          ngbDropdownToggle
+                        >
+                          <i class="fa fa-plus-circle"></i> Conditions
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" style="" ngbDropdownMenu>
+                          <a class="dropdown-item" (click)="addCondition(node)"><i class="icon-menu7"></i> Condition</a>
+                          <a class="dropdown-item" (click)="addconditionGroup(node)"
+                            ><i class="icon-screen-full"></i> conditionGroup</a
+                          >
+                        </div>
+                      </div>
+                      <select
+                        *ngIf="node.data.list && node.data.list.length > 0 && index"
+                        [(ngModel)]="mapper.mappingConfig[node.data.key]"
+                        class="form-control w-100 m-0"
+                        style="margin-left: 4px; height: 30px;"
+                      >
+                        <option *ngFor="let opt of node.data.list" [ngValue]="opt.name">{{ opt.name }}</option>
+                      </select>
+
+                      <tagify
+                        [settings]="{ userInput: false }"
+                        [(ngModel)]="mapper.mappingConfig[node.data.key]"
+                        (add)="onAdd($event, node.data)"
+                        (ngModelChange)="changedText($event, node.data)"
+                        *ngIf="(!node.data.children || node.data.type !== 'condition') && !node.data.list"
+                      >
+                      </tagify>
+                    </span>
+                  </ng-template>
+                </tree-root>
+              </div>
+            </li>
+            <li style="width: 30%;">
+              <div class="header">
+                <div class="title">Field Conitions</div>
+              </div>
+              <div class="in-content ">
+                {{ mappingFields.sql }}
+              </div>
+            </li>
+          </ul>
+          <!-- <div class="card-group mt-sm-3" style="min-height: 540px;">
+            <div class="card shadow-0" *ngFor="let i of [1,2,3]">
+                <div class="card-header bg-white">
+                    <h6 class="card-title">                  
+                      input{{i}}
+                    </h6>
+                  </div>
+                  <div class="card-body">io{{i}}</div>
+              </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- /right sidebar component -->
+    <!-- <div
+      class="sidebar-light bg-transparent  sidebar-component-right w-25 border-0 shadow-0 order-1 order-lg-2 sidebar-expand-md"
+    >
+      <div class="tab-pane fade active show">
+        <div class="card">
+          <div class="card-header bg-white">
+            <h6 class="card-title">
+              <i class="icon-power-cord icon-2x mr-2"></i>
+              Connectors
+            </h6>
+          </div>
+          <div class="list-group list-group-flush" *ngIf="connectors">
+            <a              
+              class="list-group-item list-group-item-action legitRipple pointer"
+              *ngFor="let conn of connectors"  (click)="activeConnect(conn)"
+            >
+              <i class="icon-power-cord mr-3"></i>
+              {{ conn.name }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div> -->
+    <!-- /inner container -->
+  </div>
+</div>
+<!-- 
+<div class="card node-config" [ngStyle]="{ top: !showLarge ? '55%' : '46px' }" *ngIf="showConfig">
+  <form [formGroup]="configForm">
+    <div class="card-header header-elements-md-inline node-heading">
+      <div class="media col-lg-4">
+        <a class="mr-3">
+          <img src="../assets/images/logo/aws-s3-logo.svg" width="34" height="34" class="rounded-circle" alt="" />
+        </a>
+        <div class="media-body mr-3">
+          <a class="media-title font-weight-semibold text-default">Mysql</a>
+          <div class="font-size-sm text-muted">{{ configForm.get('action').value }}</div>
+        </div>
+        <div class="form-group col-lg-8">
+          <select
+            class="form-control form-control-sm"
+            formControlName="connection"
+            (ngModelChange)="changeConnection($event)"
+          >
+            <option value="null">Choose Connection</option>
+            <option *ngFor="let db of connections" value="{{ db.id }}">{{ db.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="header-elements">
+        <ul class="list-inline list-inline-dotted mb-0 mt-2 mt-md-0">
+          <li class="list-inline-item"><i class="icon-info22 mr-2"></i></li>
+          <li class="list-inline-item" (click)="showLarge = !showLarge">
+            <a [attr.class]="!showLarge ? 'icon-enlarge6' : 'icon-shrink6'"></a>
+          </li>
+          <li class="list-inline-item" (click)="saveData()"><a class="icon-floppy-disk"></a></li>
+          <li class="list-inline-item" (click)="showConfig = !showConfig">
+            <a class="icon-cross2 icon-2x"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <ul class="panel">
+      <li style="width: 30%;">
+        <div class="header">
+          <div class="title">Config Connetor</div>
+        </div>
+        <div class="in-content" *ngIf="connector.name !== 'Salesforce'">
+           <div class="form-group col-lg-8 mt-2">
+            <div class="label-section">
+              <label> <span class="text-danger">*</span>Action</label>
+              <select formControlName="action" class="form-control form-control-sm">
+                <option value="null">Choose Action</option>
+                <option *ngFor="let db of db.actions" value="{{ db }}">{{ db }}</option>
+              </select>
+            </div>
+          </div> 
+          <div class="form-group col-lg-8 mt-2">
+            <div class="label-section">
+              <label> <span class="text-danger">*</span>DataBase</label>
+              <select
+                formControlName="database"
+                class="form-control form-control-sm"
+                (ngModelChange)="changeDB($event)"
+              >
+                <option value="null">Choose DB</option>
+                <option *ngFor="let db of db.dataBase" value="{{ db.name }}">{{ db.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group col-lg-8 mt-2">
+            <div class="label-section">
+              <label> <span class="text-danger">*</span>Tables</label>
+              <select
+                formControlName="table"
+                class="form-control form-control-sm"
+                (ngModelChange)="changeTable($event)"
+              >
+                <option value="null">Choose Action</option>
+                <option *ngFor="let db of db.tables" value="{{ db.table }}">{{ db.table }}</option>
+              </select>
+            </div>
+          </div>
+          <div
+            class="form-group col-lg-12 mt-2"
+            *ngIf="configForm.get('table').value && configForm.get('action').value !== 'delete'"
+          >
+            <div class="label-section">
+              <label> <span class="text-danger">*</span>Elements {{ configForm.get('table').value }}</label>
+              <tree-root
+                [(state)]="stateTree"
+                #tree
+                [nodes]="db.columns"
+                (focus)="clickNode($event)"
+                [options]="options"
+              >
+                <ng-template #treeNodeTemplate let-node>
+                  <span class="custom-node">
+                    <img src="../../../assets//images/logo/cube.svg" width="16px" height="16px" />
+                    {{ node.data.column_name }}
+                  </span>
+                </ng-template>
+              </tree-root>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="connector.name === 'Salesforce'">
+           <div class="form-group col-lg-8 mt-2">
+            <div class="label-section">
+              <label> <span class="text-danger">*</span>Action</label>
+              <select formControlName="action" class="form-control form-control-sm">
+                <option value="null">Choose Action</option>
+                <option *ngFor="let db of db.actions" value="{{ db }}">{{ db }}</option>
+              </select>
+            </div>
+          </div> 
+          <div class="form-group col-lg-8 mt-2">
+            <div class="label-section">
+              <label> <span class="text-danger">*</span>sObjects</label>
+              <select
+                formControlName="database"
+                class="form-control form-control-sm"
+                (ngModelChange)="changeObject($event)"
+              >
+                <option value="null">Choose sObject</option>
+                <option *ngFor="let db of db.tables" value="{{ db.name }}">{{ db.name }}</option>
+              </select>
+            </div>
+          </div>
+          <div
+            class="form-group col-lg-12 mt-2"
+            *ngIf="configForm.get('database').value && configForm.get('action').value !== 'delete'"
+          >
+            <div class="label-section">
+              <label> <span class="text-danger">*</span>Elements {{ configForm.get('database').value }}</label>
+            </div>
+          </div>
+          <div class="in-content formtree">
+            <tree-root [(state)]="stateTree" #tree [nodes]="db.columns" (focus)="clickNode($event)" [options]="options">
+              <ng-template #treeNodeTemplate let-node>
+                <span class="custom-node">
+                  <img src="../../../assets//images/logo/cube.svg" width="16px" height="16px" />
+                  {{ node.data.column_name }}
+                </span>
+              </ng-template>
+            </tree-root>
+          </div>
+        </div>
+      </li>
+      <li style="width: 40%;">
+        <div class="header">
+          <div class="title">
+            <button
+              [disabled]="configForm.get('action').value === 'insert'"
+              (click)="showLogicBox()"
+              type="button"
+              class="btn btn-outline btn-sm bg-primary border-primary text-primary-800"
+            >
+              <i class="icon-cog mr-2"></i>Add Functions
+            </button>
+          </div>
+        </div>
+        <div class="in-content formtree" *ngIf="showLogic">
+          <div class="col-md-12">
+            <div class="card border-grey-300" style="margin-top: 22px;">
+              <div class="card-header bg-light border-grey-300 header-elements-inline">
+                <h6 class="card-title">Where</h6>
+                <div class="header-elements">
+                  <div class="list-icons">
+                    <a (click)="addWhere()" class="list-icons-item icon-plus-circle2 mr-2 pointer"></a>
+                    <a class="list-icons-item icon-cross2"></a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-body row">
+                <ng-container *ngFor="let item of where; let i = index">
+                  <div class="form-group col-lg-5 mt-2">
+                    <div class="label-section">
+                      <label> <span class="text-danger">*</span>Element</label>
+                      <select
+                        [(ngModel)]="item.element"
+                        [ngModelOptions]="{ standalone: true }"
+                        class="form-control form-control-sm"
+                      >
+                        <option value="null">Choose Element</option>
+                        <ng-container *ngIf="db.columns && db.columns[0].children && db.columns[0].children.length">
+                          <option *ngFor="let db of db.columns[0].children" value="{{ db.column_name }}">{{
+                            db.column_name
+                          }}</option>
+                        </ng-container>
+                        <ng-container *ngIf="db.columns && !db.columns[0].children">
+                          <option *ngFor="let db of db.columns" value="{{ db.column_name }}">{{
+                            db.column_name
+                          }}</option>
+                        </ng-container>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-5 mt-2">
+                    <div class="label-section">
+                      <label> <span class="text-danger">*</span>Operator</label>
+                      <select
+                        [(ngModel)]="item.operator"
+                        [ngModelOptions]="{ standalone: true }"
+                        class="form-control form-control-sm"
+                      >
+                        <option value="null">Choose Operator</option>
+                        <option *ngFor="let db of operators" value="{{ db }}">{{ db }}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group col-lg-2 mt-2">
+                    <div class="label-section">
+                      <a (click)="removeWhere(i)" class="list-icons-item icon-cross2"></a>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li style="width: 30%;">
+        <div class="header">
+          <div class="title">Query</div>
+          <div class="col-lg-8"></div>
+        </div>
+        <div class="in-content formtree">
+          {{ configForm.get('sql').value }}
+          <div class="mt-4">
+            Input
+            <tree-root [nodes]="input" (focus)="clickNode($event)">
+              <ng-template #treeNodeTemplate let-node>
+                <span class="custom-node">
+                  <img src="../../../assets//images/logo/cube.svg" width="16px" height="16px" /> {{ node.data.name }}
+                </span>
+              </ng-template>
+            </tree-root>
+          </div>
+          <div class="mt-4">
+            Output
+            <tree-root [nodes]="output" (focus)="clickNode($event)">
+              <ng-template #treeNodeTemplate let-node>
+                <span class="custom-node">
+                  <img src="../../../assets//images/logo/cube.svg" width="16px" height="16px" /> {{ node.data.name }}
+                </span>
+              </ng-template>
+            </tree-root>
+          </div> 
+        </div>
+      </li>
+    </ul>
+  </form>
+</div> -->

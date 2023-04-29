@@ -1,0 +1,178 @@
+<div class="page-header">
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <!-- <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+          <a href="widgets_content.html" class="breadcrumb-item">Widgets</a> -->
+        <span class="breadcrumb-item active">{{ appData?.name }} Connections</span>
+      </div>
+
+      <a class="header-elements-toggle text-default d-md-none">
+        <button
+          type="button"
+          class="btn btn-outline btn-sm alpha-success text-success-800 border-success-600 "
+          (click)="newConnection()"
+        >
+          <i class="icon-plus2 mr-2"></i> New
+        </button>
+      </a>
+    </div>
+
+    <div class="header-elements d-none">
+      <div class="breadcrumb justify-content-center"></div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <!-- Inner container -->
+  <div class="d-flex align-items-start flex-column flex-md-row">
+    <!-- Left content -->
+
+    <div class="col-md-6" *ngIf="appData?.name">
+      <!-- Grey background -->
+      <form [formGroup]="connForm">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0">Connection Details</h6>
+          </div>
+
+          <div class="card-body">
+            <div class="mb-3" *ngFor="let item of formData">
+              <label class="form-label">{{ item.title }}<span class="text-danger">*</span></label>
+              <input
+                [formControlName]="item.control"
+                [type]="item.type ? item.type : 'text'"
+                class="form-control"
+                [placeholder]="item.description"
+              />
+            </div>
+          </div>
+
+          <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+            <button type="button" class="btn btn-link">
+              Clear
+              <!-- <i class="icon-plus2 mr-2"></i> New -->
+            </button>
+            <button
+              type="submit"
+              (click)="saveConnection()"
+              class="btn bg-primary-800"
+              [disabled]="connForm.pristine || connForm.invalid"
+            >
+              {{ connectionId ? 'Update' : 'Save' }}
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Sales stats -->
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body p-0">
+          <div class="table-responsive ">
+            <table class="table text-nowrap table-hover">
+              <thead>
+                <tr>
+                  <th>
+                    <i class="icon-lan"></i> &nbsp;Connections
+                    <span class="badge badge-pill bg-success position-static ml-auto ml-lg-2">{{
+                      appData?.connections.length
+                    }}</span>
+                  </th>
+                  <th></th>
+
+                  <th style="text-align: right;">
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm alpha-success text-success-800 border-success-600"
+                      (click)="newConnection()"
+                    >
+                      <i class="icon-plus2 mr-2"></i> New
+                    </button>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let conn of appData?.connections">
+                  <td>
+                    <div class="d-flex text-left">
+                      <div class="mr-3">
+                        <a
+                          href="#"
+                          class="btn bg-transparent border-indigo-400 text-indigo-400 rounded-round border-2 btn-icon"
+                        >
+                          <i class="icon-key"></i>
+                        </a>
+                      </div>
+                      <div>
+                        <a
+                          (click)="editConnection(conn)"
+                          class="text-default font-weight-semibold letter-icon-title pointer"
+                          >{{ conn.name }}</a
+                        >
+                        <div class="text-muted font-size-sm">{{ conn.description }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <button
+                      *ngIf="conn._id && conn.url"
+                      style="padding: 4px 12px;"
+                      type="button"
+                      (click)="doLogin(conn.url)"
+                      class="btn btn-outline alpha-indigo text-indigo-800 border-indigo-600"
+                    >
+                      Login
+                    </button>
+                  </td>
+                  <td style="text-align: right;">
+                    <a href="#" class="text-default" data-toggle="collapse" data-target="#james2">
+                      <i class="bi bi-trash text-danger"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- /sales stats -->
+
+    <!-- Blog post -->
+
+    <!-- /blog post -->
+
+    <!-- Invoices -->
+
+    <!-- /right sidebar component -->
+  </div>
+  <!-- /inner container -->
+</div>
+
+<ng-template #form>
+  <div class="card-body" *ngIf="config?.name">
+    {{ config.name }}
+    <form [formGroup]="connForm">
+      <div *ngFor="let key of config | keyvalue">
+        <h3>{{ key.value.title }}</h3>
+        <p>{{ key.value.description }}</p>
+        <input type="text" [formControlName]="key" />
+        <p>Value: {{ connForm.get(key)?.value }}</p>
+      </div>
+      <!-- <button type="submit">Submit</button> -->
+    </form>
+
+    <div class="text-left">
+      <button type="submit" (click)="getToken()" class="btn btn-primary mr-2" *ngIf="appData?.authURL">
+        <i class="icon-floppy-disk mr-2"></i>Connect
+      </button>
+      <button type="submit" (click)="saveConnection()" class="btn bg-primary-800">
+        {{ connectionId ? 'Update' : 'Save' }}
+      </button>
+    </div>
+  </div>
+</ng-template>

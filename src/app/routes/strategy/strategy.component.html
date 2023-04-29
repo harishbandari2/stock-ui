@@ -1,0 +1,324 @@
+<div class="page-header page-header-light" *ngIf="!portfolioId">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex  justify-content-sm-between flex-sm-wrap">
+      <div class="d-flex align-items-center mb-3 mb-sm-0">
+        <div id="campaigns-donut">
+          <svg width="42" height="42">
+            <g transform="translate(21,21)">
+              <g class="d3-arc d3-slice-border" style="cursor: pointer;">
+                <path
+                  d="M1.1634144591899855e-15,19A19,19 0 0,1 -14.050144241469582,12.790365389381929L-7.025072120734791,6.3951826946909645A9.5,9.5 0 0,0 5.817072295949927e-16,9.5Z"
+                  style="fill: rgb(102, 187, 106);"
+                ></path>
+              </g>
+              <g class="d3-arc d3-slice-border" style="cursor: pointer;">
+                <path
+                  d="M-14.050144241469582,12.790365389381929A19,19 0 0,1 0.6493373977393208,-18.988900993577726L0.3246686988696604,-9.494450496788863A9.5,9.5 0 0,0 -7.025072120734791,6.3951826946909645Z"
+                  style="fill: rgb(149, 117, 205);"
+                ></path>
+              </g>
+              <g class="d3-arc d3-slice-border" style="cursor: pointer;">
+                <path
+                  d="M0.6493373977393208,-18.988900993577726A19,19 0 0,1 5.817072295949928e-15,19L2.908536147974964e-15,9.5A9.5,9.5 0 0,0 0.3246686988696604,-9.494450496788863Z"
+                  style="fill: rgb(255, 112, 67);"
+                ></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h5 class="font-weight-semibold mb-0">
+            Total Algos {{ algoList?.length }}
+            <!-- <span class="text-danger font-size-sm font-weight-normal"> ({{ portfolio.netchange }}%)</span> -->
+          </h5>
+          <span class="badge badge-mark border-success mr-1"></span>
+          <span class="text-muted">Active Algos {{ activeAlgos }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center mb-3 mb-sm-0">
+      <i class="icon-stats-growth icon-2x text-muted"></i>
+      <div class="ml-3">
+        <h5
+          [class]="
+            portfolio?.MTM > -1 ? 'text-success font-weight-semibold mb-0' : 'text-danger font-weight-semibold mb-0'
+          "
+        >
+          {{ portfolio.MTM | number: '1.2-2' }}
+          <span class="text-success font-size-sm font-weight-normal"> ({{ portfolio.netchange }}%)</span>
+        </h5>
+        <span class="badge badge-mark border-danger mr-1"></span> <span class="text-muted">Total MTM</span>
+      </div>
+    </div>
+    <!-- <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Strategies</span></h4>
+       <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div> -->
+
+    <div class="header-elements ">
+      <div class="d-flex justify-content-center">
+        <button
+          style="padding: 4px 12px;"
+          type="button"
+          routerLink="/create"
+          class="btn btn-outline alpha-indigo text-indigo-800 border-indigo-600"
+        >
+          <i class="icon-plus2 mr-2"></i> Create
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+        <a href="widgets_content.html" class="breadcrumb-item">Widgets</a>
+        <span class="breadcrumb-item active">Content</span>
+      </div>
+
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+
+    <div class="header-elements d-none">
+      <div class="breadcrumb justify-content-center">
+        <button
+          type="button"
+          (click)="openModel(content)"
+          class="btn btn-outline alpha-success text-success-800 border-success-600"
+        >
+          <i class="icon-plus2 mr-2"></i> Application
+        </button>
+      </div>
+    </div>
+  </div> -->
+</div>
+
+<div class="content">
+  <!-- Dashboard content -->
+  <div class="row">
+    <div class="col-xl-12">
+      <!-- Marketing campaigns -->
+      <div class="card">
+        <ng-container *ngIf="portfolioId">
+          <div class="card-header header-elements-sm-inline">
+            <h6 class="card-title">{{ portfolio?.name }} Algos</h6>
+            <div class="header-elements">
+              <span class="badge badge-success badge-pill">{{ activeAlgos }} active</span>
+              <!-- <div class="list-icons ml-3">
+                <div class="dropdown">
+                  <a href="#" class="list-icons-item dropdown-toggle" data-toggle="dropdown"
+                    ><i class="icon-menu7"></i
+                  ></a>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <a href="#" class="dropdown-item"><i class="icon-sync"></i> Update data</a>
+                    <a href="#" class="dropdown-item"><i class="icon-list-unordered"></i> Detailed log</a>
+                    <a href="#" class="dropdown-item"><i class="icon-pie5"></i> Statistics</a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item"><i class="icon-cross3"></i> Clear list</a>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+
+          <div class="card-body d-sm-flex align-items-sm-center justify-content-sm-between flex-sm-wrap">
+            <div class="d-flex align-items-center mb-3 mb-sm-0">
+              <div id="campaigns-donut">
+                <svg width="42" height="42">
+                  <g transform="translate(21,21)">
+                    <g class="d3-arc d3-slice-border" style="cursor: pointer;">
+                      <path
+                        d="M1.1634144591899855e-15,19A19,19 0 0,1 -14.050144241469582,12.790365389381929L-7.025072120734791,6.3951826946909645A9.5,9.5 0 0,0 5.817072295949927e-16,9.5Z"
+                        style="fill: rgb(102, 187, 106);"
+                      ></path>
+                    </g>
+                    <g class="d3-arc d3-slice-border" style="cursor: pointer;">
+                      <path
+                        d="M-14.050144241469582,12.790365389381929A19,19 0 0,1 0.6493373977393208,-18.988900993577726L0.3246686988696604,-9.494450496788863A9.5,9.5 0 0,0 -7.025072120734791,6.3951826946909645Z"
+                        style="fill: rgb(149, 117, 205);"
+                      ></path>
+                    </g>
+                    <g class="d3-arc d3-slice-border" style="cursor: pointer;">
+                      <path
+                        d="M0.6493373977393208,-18.988900993577726A19,19 0 0,1 5.817072295949928e-15,19L2.908536147974964e-15,9.5A9.5,9.5 0 0,0 0.3246686988696604,-9.494450496788863Z"
+                        style="fill: rgb(255, 112, 67);"
+                      ></path>
+                    </g>
+                  </g>
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h5 class="font-weight-semibold mb-0">
+                  {{ portfolio.margin ? portfolio.margin : (0 | number: '1.2-2') }}
+                  <span class="text-danger font-size-sm font-weight-normal"> ({{ portfolio.netchange }}%)</span>
+                </h5>
+                <span class="badge badge-mark border-success mr-1"></span>
+                <span class="text-muted">Total Margin</span>
+              </div>
+            </div>
+
+            <div class="d-flex align-items-center mb-3 mb-sm-0">
+              <i class="icon-stats-growth icon-2x text-muted"></i>
+              <div class="ml-3">
+                <h5
+                  [class]="
+                    portfolio?.MTM > -1
+                      ? 'text-success font-weight-semibold mb-0'
+                      : 'text-danger font-weight-semibold mb-0'
+                  "
+                >
+                  {{ portfolio.MTM | number: '1.2-2' }}
+                  <span class="text-success font-size-sm font-weight-normal"> ({{ portfolio.netchange }}%)</span>
+                </h5>
+                <span class="badge badge-mark border-danger mr-1"></span> <span class="text-muted">Total MTM</span>
+              </div>
+            </div>
+
+            <div>
+              <button
+                style="padding: 4px 12px;"
+                type="button"
+                routerLink="/create"
+                class="btn btn-outline alpha-indigo text-indigo-800 border-indigo-600"
+              >
+                <i class="icon-plus2 mr-2"></i> Create
+              </button>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="table">
+          <table class="table text-nowrap">
+            <thead>
+              <tr class="table-active">
+                <th style="width: 10%;">Enable</th>
+                <th style="width: 10%;">Status</th>
+                <th style="width: 20%;">Broker</th>
+                <th style="width: 15%;">Strategy</th>
+                <th style="width: 15%;">MTM</th>
+                <th style="width: 10%;">Days</th>
+                <th style="text-align: center;">Alert</th>
+                <th class="text-center" style="width: 20px;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- <tr>
+                <td>
+                  <div class="" style="display: flex;align-items:center">
+                    <select class="form-control" [ngModel]="currentDay" style="width: 100px;height:34px;">
+                      <option value="1">Monday </option>
+                      <option value="2">Tuesday</option>
+                      <option value="3">Wedday </option>
+                      <option value="4">Thursday</option>
+                      <option value="5">Friday</option>
+                      <option value="6">Saturday</option>
+                      <option value="0">Sunday</option>
+                    </select>
+                  </div>
+                </td>
+                <td colspan="5"></td>
+                <td class="text-left"></td>
+              </tr> -->
+              <tr *ngFor="let algo of algoList; let i = index; trackBy: identify">
+                <td>
+                  <ng-toggle
+                    [(ngModel)]="algo.enable"
+                    [width]="38"
+                    [height]="14"
+                    [margin]="-3"
+                    [color]="{
+                      unchecked: '#b0b0b0',
+                      checked: '#92aaeb'
+                    }"
+                    [switchColor]="{
+                      checked: '#2554d6',
+                      unchecked: '#817979'
+                    }"
+                    [values]="{
+                      unchecked: false,
+                      checked: true
+                    }"
+                    (change)="update(algo, i)"
+                  ></ng-toggle>
+                </td>
+                <td>
+                  <span class="status text-muted" *ngIf="algo.status === 'DISABLED'">Disabled</span>
+                  <span class="status text-indigo" *ngIf="algo.status === 'ENABLED'">Enabled</span>
+                  <span class="status text-warning" *ngIf="algo.status === 'RUNNING'">Running</span>
+                  <span class="status text-success" *ngIf="algo.status === 'ACTIVE'">Trade Active</span>
+                  <span class="status text-danger" *ngIf="algo.status === 'CLOSED'">Trade Closed</span>
+                </td>
+                <td>
+                  <span> {{ algo.brokers && algo.brokers.length > 0 ? algo.brokers[0].name : 'Paper' }}</span>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <!-- <div class="mr-3">
+                      <div class="bg-success bg-opacity-10 text-success lh-1 rounded-pill p-2">
+												<i class="ph-arrow-clockwise"></i>
+											</div>
+                    </div> -->
+                    <div>
+                      <a
+                        class="pointer"
+                        style="font-size: 14px;"
+                        style="font-size:14px; color:#2554d6; text-decoration: underline;"
+                        routerLink="/trades/{{ algo._id }}"
+                        >{{ algo.name }}</a
+                      >
+                      <div class="text-muted font-size-sm">
+                        <!-- <span class="bi bi-dot"></span> -->
+                        {{ algo.startTime }} - {{ algo.endTime }}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <h6
+                    *ngIf="algo?.MTM || algo.MTM == 0"
+                    class="font-weight-semibold mb-0"
+                    [class]="algo.MTM > -1 ? 'text-success' : 'text-danger'"
+                  >
+                    <i class="bi bi-currency-rupee"></i
+                    >{{ algo.MTM || algo.MTM == 0 ? (algo.MTM | number: '1.2-2') : '-' }}
+                  </h6>
+                </td>
+                <td>
+                  <span
+                    *ngFor="let day of algo.days; let last = last; trackBy: identify"
+                    [class]="day.id == currentDay ? 'text-success-800' : 'text-muted'"
+                  >
+                    {{ day.name | slice: 0:2 }}{{ last ? '' : ',' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <span class="text-muted ">{{ algo.alert ? algo.alert : '-' }}</span>
+                </td>
+
+                <td class="text-center">
+                  <ul class="list-inline mb-0 mt-2 mt-sm-0 pointer">
+                    <li class="list-inline-item dropdown" ngbDropdown>
+                      <a class="text-default dropdown-toggle" data-toggle="dropdown" ngbDropdownToggle
+                        ><i class="icon-menu7"></i
+                      ></a>
+
+                      <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                        <a class="dropdown-item" routerLink="/create/{{ algo._id }}"
+                          ><i class="icon-pencil7"></i> Edit
+                        </a>
+                        <a class="dropdown-item" (click)="deleteAlgo(algo)"><i class="icon-cross2"></i>Delete</a>
+                      </div>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- /dashboard content -->
+</div>

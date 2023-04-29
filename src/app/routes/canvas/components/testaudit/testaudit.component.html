@@ -1,0 +1,53 @@
+<div class="card-header header-elements-md-inline node-heading">
+  <div class="media col-lg-4">
+    <a class="mr-3">
+      Test Results
+    </a>
+    <!-- <div class="media-body mr-3">
+      <a class="media-title font-weight-semibold text-default">{{ configNode.component.name }}</a>
+      <div class="font-size-sm text-muted">{{ configNode.action.name }}</div>
+    </div> -->
+  </div>
+
+  <div class="header-elements">
+    <ul class="list-inline list-inline-dotted mb-0 mt-2 mt-md-0">
+      <li class="list-inline-item" (click)="windowResize()">
+        <a [attr.class]="!showLarge ? 'icon-enlarge6' : 'icon-shrink6'"></a>
+      </li>
+      <li class="list-inline-item" (click)="mapper.showConfig = !mapper.showConfig">
+        <a class="icon-cross2 icon-2x"></a>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<ul class="panel">
+  <li>
+    <div class="header">
+      <div class="title">Components</div>
+    </div>
+    <div class="in-content p-0">
+      <ul *ngIf="components?.length > 0" class="list-group list-group-bordered">
+        <li *ngFor="let item of components" class="list-group-item" (click)="clickComponent(item)">
+          <a>{{ item }}</a>
+        </li>
+      </ul>
+    </div>
+  </li>
+  <li>
+    <div class="header">
+      <div class="title">Input Data</div>
+    </div>
+  </li>
+  <li>
+    <div class="header">
+      <div class="title">Output Data</div>
+    </div>
+    <div class="in-content">
+      <app-json-viewer [data]="(mapper?.testData)[activeComponent]"></app-json-viewer>
+      <!-- <ul class="list-group">
+          <li><span style="display: block;">{{ (mapper?.testData)[activeComponent] | json }}</span></li>
+        </ul> -->
+    </div>
+  </li>
+</ul>

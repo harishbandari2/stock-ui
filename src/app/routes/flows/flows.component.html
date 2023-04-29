@@ -1,0 +1,315 @@
+<div class="page-header">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Flow</span> - Pipes</h4>
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+    <div class="header-elements d-none">
+      <div class="d-flex justify-content-center">
+        <a routerLink="/apps" class="btn btn-link btn-float text-default"
+          ><i class="icon-meter-fast text-primary"></i> <span>Dashboard</span></a
+        >
+        <a class="btn btn-link btn-float text-default"
+          ><i class="icon-stats-dots text-primary"></i><span>Monitor</span></a
+        >
+
+        <a routerLink="/flows" class="btn btn-link btn-float text-default"
+          ><i class="icon-cogs text-primary"></i> <span>Flows</span></a
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+        <a href="widgets_content.html" class="breadcrumb-item">Widgets</a>
+        <span class="breadcrumb-item active">Content</span>
+      </div>
+
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+
+    <div class="header-elements d-none">
+      <div class="breadcrumb justify-content-center">
+        <a class="breadcrumb-elements-item">
+          <!-- <button type="button" class="btn btn-outline bg-primary text-primary border-primary">
+                        <i class="icon-plus2 mr-2"></i>
+                        Create Flow
+                    </button> -->
+          <button
+            type="button"
+            (click)="openModel(content)"
+            class="btn btn-outline alpha-success text-success-800 border-success-600"
+          >
+            <i class="icon-plus2 mr-2"></i> Create Flow
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Inner container -->
+    <div class="d-flex align-items-start flex-column flex-md-row">
+      <!-- Left content -->
+      <div class="w-100 order-2 order-md-1">
+        <!-- Filter toolbar -->
+        <div
+          class="navbar navbar-expand-lg navbar-light navbar-component rounded"
+          style="margin-left: 0;margin-right: 0;"
+        >
+          <div class="text-center d-lg-none w-100">
+            <button
+              type="button"
+              class="navbar-toggler dropdown-toggle"
+              data-toggle="collapse"
+              data-target="#navbar-filter"
+            >
+              <i class="icon-unfold mr-2"></i>
+              Filters
+            </button>
+          </div>
+
+          <div class="navbar-collapse collapse" id="navbar-filter">
+            <span class="navbar-text font-weight-semibold mr-3">
+              Filter:
+            </span>
+
+            <ul class="navbar-nav flex-wrap">
+              <li class="nav-item dropdown">
+                <a class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+                  <i class="icon-sort-time-asc mr-2"></i>
+                  By date
+                </a>
+
+                <div class="dropdown-menu">
+                  <a class="dropdown-item">Show all</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item">Today</a>
+                  <a class="dropdown-item">Yesterday</a>
+                  <a class="dropdown-item">This week</a>
+                  <a class="dropdown-item">This month</a>
+                  <a class="dropdown-item">This year</a>
+                </div>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+                  <i class="icon-sort-amount-desc mr-2"></i>
+                  By status
+                </a>
+
+                <div class="dropdown-menu">
+                  <a class="dropdown-item">Show all</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item">Open</a>
+                  <a class="dropdown-item">On hold</a>
+                  <a class="dropdown-item">Resolved</a>
+                  <a class="dropdown-item">Closed</a>
+                  <a class="dropdown-item">Duplicate</a>
+                  <a class="dropdown-item">Invalid</a>
+                  <a class="dropdown-item">Wontfix</a>
+                </div>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a class="navbar-nav-link dropdown-toggle" data-toggle="dropdown">
+                  <i class="icon-sort-numeric-asc mr-2"></i>
+                  By priority
+                </a>
+
+                <div class="dropdown-menu">
+                  <a class="dropdown-item">Show all</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item">Highest</a>
+                  <a class="dropdown-item">High</a>
+                  <a class="dropdown-item">Normal</a>
+                  <a class="dropdown-item">Low</a>
+                </div>
+              </li>
+            </ul>
+
+            <span class="navbar-text font-weight-semibold mr-3 ml-md-auto">
+              View mode:
+            </span>
+
+            <div class="form-check form-check-switchery form-check-switchery-double mb-3 mb-lg-0">
+              <label class="form-check-label">
+                List
+                <input
+                  type="checkbox"
+                  class="form-input-switchery"
+                  checked=""
+                  data-fouc=""
+                  data-switchery="true"
+                  style="display: none;"
+                /><span
+                  class="switchery switchery-default"
+                  style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 10px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"
+                  ><small
+                    style="left: 18px; background-color: rgb(255, 255, 255); transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"
+                  ></small
+                ></span>
+                Grid
+              </label>
+            </div>
+          </div>
+        </div>
+        <!-- /filter toolbar -->
+
+        <!-- Task grid -->
+        <div class="row">
+          <div class="col-xl-3" *ngFor="let item of flowList; let index = index">
+            <div class="card  rounded-left-0">
+              <div class="card-body">
+                <div class="d-sm-flex align-item-sm-center flex-sm-nowrap">
+                  <div>
+                    <h6 class="font-weight-semibold mb-0 pointer" routerLink="/canvas/{{ item.id }}">
+                      {{ item.name }}
+                    </h6>
+                    <p class="mb-3">{{ item.description }}</p>
+
+                    <a>
+                      <img
+                        src="assets/images/logo/google-drive.svg"
+                        class="bg-transparent border-slate-300 text-slate rounded-round border"
+                        width="36"
+                        height="36"
+                        alt=""
+                      />
+                    </a>
+                    <a>
+                      <img
+                        src="assets/images/logo/trello.svg"
+                        class="bg-transparent border-slate-300 text-slate rounded-round border "
+                        width="36"
+                        height="36"
+                        alt=""
+                      />
+                    </a>
+                    <a>
+                      <img
+                        src="assets/images/logo/freshdesk.svg"
+                        class="bg-transparent border-slate-300 text-slate rounded-round border"
+                        width="36"
+                        height="36"
+                        alt=""
+                      />
+                    </a>
+                    <a class="btn btn-icon bg-transparent border-slate-300 text-slate rounded-round border-dashed"
+                      ><i class="icon-plus22"></i
+                    ></a>
+                  </div>
+
+                  <ul class="list list-unstyled mb-0 mt-3 mt-sm-0 ml-auto">
+                    <li><span class="text-muted">28 January, 2015</span></li>
+                    <li>
+                      Status: &nbsp;
+                      <a
+                        *ngIf="!item.deactive"
+                        class="badge badge-flat bg-success border-success  text-white-600 rounded-0 dropdown-toggle"
+                        >Deployed</a
+                      >
+                      <a
+                        *ngIf="item.deactive"
+                        class="badge badge-flat  border-danger  text-danger-600 rounded-0 dropdown-toggle"
+                        >Not Deployed</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="card-footer d-sm-flex justify-content-sm-between align-items-sm-center">
+                <span>Due: <span class="font-weight-semibold">23 hours</span></span>
+
+                <ul class="list-inline mb-0 mt-2 mt-sm-0 pointer">
+                  <!-- <li class="list-inline-item pointer" (click)="deleteFlow(index)"><i class="icon-trash"></i></li> -->
+                  <li class="list-inline-item dropdown" ngbDropdown>
+                    <a class="text-default dropdown-toggle" data-toggle="dropdown" ngbDropdownToggle
+                      ><i class="icon-menu7"></i
+                    ></a>
+
+                    <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
+                      <a class="dropdown-item" (click)="suspendFlow(item)"
+                        ><i class="icon-alarm-add"></i>{{ item.deactive ? 'Deploy' : 'Deactivate' }}</a
+                      >
+                      <a class="dropdown-item"><i class="icon-attachment"></i> Attach screenshot</a>
+                      <!-- <a class="dropdown-item"><i class="icon-rotate-ccw2"></i> Reassign</a> -->
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item"><i class="icon-pencil7"></i> Edit Pipe</a>
+                      <a class="dropdown-item" (click)="deleteFlow(index)"><i class="icon-cross2"></i>Delete</a>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- /task grid -->
+
+        <!-- Pagination -->
+
+        <!-- /pagination -->
+      </div>
+      <!-- /left content -->
+
+      <!-- Right sidebar component -->
+
+      <!-- /right sidebar component -->
+    </div>
+    <!-- /inner container -->
+  </div>
+
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Create New</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="ml-2 row">
+        <div class="customcard" *ngFor="let card of createNew" (click)="activeCard(card)">
+          <span [ngClass]="{ activeCard: card.name == activeNode?.name }">
+            <i class="{{ card.icon }} icon-2x text-white customIcon"></i>
+            <div class="cText text-white mb-0">{{ card.name }}</div>
+          </span>
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-xl-12">
+          <p class="card-footer mt-2">
+            {{ activeNode.description }}
+          </p>
+        </div>
+      </div>
+      <form [formGroup]="flowForm">
+        <div class="row ">
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="dateOfBirth">Name</label>
+              <div class="input-group">
+                <input id="dateOfBirth" formControlName="name" class="form-control" placeholder="Flow Name" />
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="dateOfBirth">Description</label>
+              <div class="input-group">
+                <input id="dateOfBirth" formControlName="description" class="form-control" placeholder="Flow desc" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn bg-primary-800" (click)="save(flowForm.value)">Save</button>
+    </div>
+  </ng-template>
+</div>

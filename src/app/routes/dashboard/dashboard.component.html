@@ -1,0 +1,344 @@
+<div class="page-header">
+  <!-- <div class="page-header-content header-elements-md-inline">
+        <div class="page-title d-flex">
+          <h4><span class="font-weight-semibold">Flow</span> - Pipes</h4>
+          <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+        </div>
+        <div class="header-elements d-none">
+          <div class="d-flex justify-content-center">
+            <a routerLink="/apps" class="btn btn-link btn-float text-default"
+              ><i class="icon-meter-fast text-primary"></i> <span>Dashboard</span></a
+            >
+            <a class="btn btn-link btn-float text-default"
+              ><i class="icon-stats-dots text-primary"></i><span>Monitor</span></a
+            >
+    
+            <a routerLink="/flows" class="btn btn-link btn-float text-default"
+              ><i class="icon-cogs text-primary"></i> <span>Flows</span></a
+            >
+          </div>
+        </div>
+      </div> -->
+
+  <!-- <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <span class="breadcrumb-item active">Subscriptions</span>
+      </div>
+
+    </div>
+  </div> -->
+</div>
+
+<div class="content">
+  <!-- Inner container -->
+
+  <div class="row">
+    <div class="col-sm-6 col-xl-3">
+      <div class="card card-body">
+        <div class="d-flex align-items-center mb-3">
+          <div class="flex-fill">
+            <h5 class="mb-0 text-indigo">Live MTM</h5>
+            <!-- <span class="text-muted">Until 1st of June</span> -->
+          </div>
+          <i class="bi bi-graph-up icon-2x text-indigo  ms-3"></i>
+        </div>
+        <div class="svg-center position-relative mb-1 text-center" id="progress_percentage_three">
+          <h6 [class]="stats.liveMTM > -1 ? 'text-success mb-1 ' : 'text-danger mb-1 '">
+            <i class="bi bi-currency-rupee"></i>{{ stats.liveMTM | number: '1.2-2' }}
+          </h6>
+        </div>
+        <div class="progress mb-2" style="height: 0.125rem;">
+          <div class="progress-bar bg-default" style="width: 0%"></div>
+        </div>
+        <div>
+          <div class="row">
+            <div class="col-4">
+              <div class="fs-sm text-muted">Created</div>
+              <h5 class="mb-0">{{ stats.livealgos }}</h5>
+            </div>
+
+            <div class="col-4">
+              <div class="fs-sm text-muted">Deployed</div>
+              <h5 class="mb-0">{{ stats.liveenabled }}</h5>
+            </div>
+
+            <div class="col-4">
+              <div class="fs-sm text-muted">Disabled</div>
+              <h5 class="mb-0">{{ stats.livedisabled }}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card card-body">
+        <div class="d-flex align-items-center mb-3 pointer">
+          <div class="flex-fill" routerLink="/strategy">
+            <h5 class="mb-0 text-indigo">Strategies</h5>
+            <!-- <span class="text-muted">Until 1st of June</span> -->
+          </div>
+          <i class="bi bi-cpu icon-2x text-indigo  ms-3"></i>
+        </div>
+        <div class="svg-center position-relative mb-1 text-center" id="progress_percentage_three">
+          <button
+            style="padding: 4px 12px; text-align: center;"
+            type="button"
+            routerLink="/create"
+            class="btn btn-outline alpha-indigo text-indigo-800 border-indigo-600"
+          >
+            <i class="icon-plus2 mr-2"></i> Create
+          </button>
+        </div>
+        <div class="progress mb-2" style="height: 0.125rem;">
+          <div class="progress-bar bg-default" style="width: 0%"></div>
+        </div>
+        <div>
+          <div class="row">
+            <div class="col-4">
+              <div class="fs-sm text-muted">Created</div>
+              <h5 class="mb-0">{{ stats.totalalgos }}</h5>
+            </div>
+
+            <div class="col-4">
+              <div class="fs-sm text-muted">Active</div>
+              <h5 class="mb-0">{{ stats.totalenabled }}</h5>
+            </div>
+
+            <div class="col-4">
+              <div class="fs-sm text-muted">Disabled</div>
+              <h5 class="mb-0">{{ stats.totaldisabled }}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card card-body">
+        <div class="d-flex align-items-center mb-3 pointer" routerLink="/apps">
+          <div class="flex-fill">
+            <h5 class="mb-0 text-indigo">Brokers</h5>
+            <!-- <span class="text-muted">Until 1st of June</span> -->
+          </div>
+          <i class="bi bi-plug icon-2x text-indigo  ms-3"></i>
+        </div>
+        <div class="svg-center position-relative mb-1 text-center" id="progress_percentage_three">
+          <button
+            style="padding: 4px 12px; text-align: center;"
+            type="button"
+            routerLink="/apps"
+            class="btn btn-outline alpha-indigo text-indigo-800 border-indigo-600"
+          >
+            <i class="icon-plus2 mr-2"></i> Create
+          </button>
+        </div>
+        <div class="progress mb-2" style="height: 0.125rem;">
+          <div class="progress-bar bg-default" style="width: 0%"></div>
+        </div>
+        <div>
+          <div class="row">
+            <div class="col-4">
+              <div class="fs-sm text-muted">Created</div>
+              <h5 class="mb-0">0</h5>
+            </div>
+
+            <div class="col-4">
+              <div class="fs-sm text-muted">Active</div>
+              <h5 class="mb-0">0</h5>
+            </div>
+
+            <div class="col-4">
+              <div class="fs-sm text-muted">Disabled</div>
+              <h5 class="mb-0">0</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card card-body">
+        <div class="d-flex align-items-center mb-3 pointer" routerLink="/portfolio">
+          <div class="flex-fill">
+            <h5 class="mb-0 text-indigo">Portfolio</h5>
+            <!-- <span class="text-muted">Until 1st of June</span> -->
+          </div>
+          <i class="bi bi-folder-fill icon-2x text-indigo  ms-3"></i>
+        </div>
+        <div class="svg-center position-relative mb-1 text-center" id="progress_percentage_three">
+          <button
+            style="padding: 4px 12px; text-align: center;"
+            type="button"
+            routerLink="/portfolio"
+            class="btn btn-outline alpha-indigo text-indigo-800 border-indigo-600"
+          >
+            <i class="icon-plus2 mr-2"></i> Create
+          </button>
+        </div>
+        <div class="progress mb-2" style="height: 0.125rem;">
+          <div class="progress-bar bg-default" style="width: 0%"></div>
+        </div>
+        <div>
+          <div class="row">
+            <div class="col-4">
+              <div class="fs-sm text-muted">Created</div>
+              <h5 class="mb-0">0</h5>
+            </div>
+
+            <div class="col-4">
+              <div class="fs-sm text-muted">Actived</div>
+              <h5 class="mb-0">0</h5>
+            </div>
+
+            <div class="col-4">
+              <div class="fs-sm text-muted">Disabled</div>
+              <h5 class="mb-0">0</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-8 col-xl-8">
+      <div class="card card-body p-0">
+        <div class="table-responsive" style="max-height: 482px; min-height: 320px;">
+          <table class="table text-nowrap table-hover">
+            <thead>
+              <tr>
+                <th class="no-border">
+                  <h6 class="mb-0 text-indigo">Deployed Algos</h6>
+                </th>
+              </tr>
+              <tr *ngIf="liveAlgos.length > 1">
+                <th style="width: 10%;">Status</th>
+                <th style="width: 15%;">Broker</th>
+                <th style="width: 15%;">Strategy</th>
+                <th style="width: 15%;">MTM</th>
+                <!-- <th style="text-align: center;">Alert</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let algo of liveAlgos; let i = index; trackBy: identify">
+                <ng-container>
+                  <td>
+                    <span class="status text-muted" *ngIf="algo.status === 'DISABLED'">Disabled</span>
+                    <span class="status text-indigo" *ngIf="algo.status === 'ENABLED'">Enabled</span>
+                    <span class="status text-warning" *ngIf="algo.status === 'RUNNING'">Running</span>
+                    <span class="status text-success" *ngIf="algo.status === 'ACTIVE'">Trade Active</span>
+                    <span class="status text-danger" *ngIf="algo.status === 'CLOSED'">Trade Closed</span>
+                  </td>
+                  <td>
+                    <span> {{ algo.brokers && algo.brokers.length > 0 ? algo.brokers[0].name : 'Paper' }}</span>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <!-- <div class="mr-3">
+                      <div class="bg-success bg-opacity-10 text-success lh-1 rounded-pill p-2">
+												<i class="ph-arrow-clockwise"></i>
+											</div>
+                    </div> -->
+                      <div>
+                        <a
+                          class="pointer"
+                          style="font-size: 14px;"
+                          style="font-size:14px; color:#2554d6; text-decoration: underline;"
+                          routerLink="/trades/{{ algo._id }}"
+                          >{{ algo.name }}</a
+                        >
+                        <div class="text-muted font-size-sm">
+                          <!-- <span class="bi bi-dot"></span> -->
+                          {{ algo.startTime }} - {{ algo.endTime }}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <h6
+                      *ngIf="algo?.MTM || algo.MTM == 0"
+                      class="font-weight-semibold mb-0"
+                      [class]="algo.MTM > -1 ? 'text-success' : 'text-danger'"
+                    >
+                      <i class="bi bi-currency-rupee"></i
+                      >{{ algo.MTM || algo.MTM == 0 ? (algo.MTM | number: '1.2-2') : '-' }}
+                    </h6>
+                  </td>
+                  <!-- <td class="text-center">
+                  <span class="text-muted ">{{ algo.alert ? algo.alert : '-' }}</span>
+                </td> -->
+                </ng-container>
+              </tr>
+              <td *ngIf="liveAlgos.length < 1" colspan="4">
+                <img
+                  class="mb-2"
+                  style="display: block; margin-left: auto; margin-right: auto;"
+                  src="data:image/png;base64,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"
+                />
+                <span
+                  style="display: flex; margin-left: auto; margin-right: auto;text-align: center; justify-content: center;"
+                  routerLink="/strategy"
+                  class="statusbg"
+                >
+                  <i class="icon-plus2 mr-2"></i> Create
+                </span>
+              </td>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4 col-xl-4">
+      <div class="card card-body p-0">
+        <div class="table-responsive" style="max-height: 482px; min-height: 320px;">
+          <table class="table text-nowrap" style="min-height: 220px;">
+            <thead>
+              <tr>
+                <th><i class="bi-bell"></i> &nbsp;Notifications</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <div>
+                    <svg
+                      class="centerDiv"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      width="64px"
+                      height="64px"
+                      viewBox="0,0,256,256"
+                    >
+                      <g
+                        fill="#aeadad"
+                        fill-rule="nonzero"
+                        stroke="none"
+                        stroke-width="1"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="10"
+                        stroke-dasharray=""
+                        stroke-dashoffset="0"
+                        font-family="none"
+                        font-weight="none"
+                        font-size="none"
+                        text-anchor="none"
+                        style="mix-blend-mode: normal"
+                      >
+                        <g transform="scale(4,4)">
+                          <path
+                            d="M57.9609,42.9629c-4.91722,-2.79414 -7.95656,-8.01236 -7.9609,-13.668v-2.85c-0.02162,-5.00195 -2.04073,-9.78795 -5.6084,-13.2939c-1.06165,-1.03442 -2.24517,-1.93587 -3.5245,-2.6845c0.08319,-0.48453 0.12763,-0.97491 0.1329,-1.4665c0,-4.97056 -4.02944,-9 -9,-9c-4.97056,0 -9,4.02944 -9,9c0.00465,0.46145 0.04386,0.92191 0.1173,1.3775c-5.61348,3.20307 -9.08967,9.15953 -9.1173,15.6225v3.2949c-0.00434,5.65564 -3.04368,10.87386 -7.9609,13.668c-2.35044,1.29873 -3.52376,4.02373 -2.85203,6.62374c0.67173,2.60001 3.01816,4.41566 5.70353,4.41336h12.16c0.51454,5.66323 5.26274,9.99958 10.9493,9.99958c5.68656,0 10.43476,-4.33635 10.9493,-9.99958h12.16c2.68538,0.0023 5.03181,-1.81335 5.70353,-4.41336c0.67173,-2.60001 -0.5016,-5.32501 -2.85203,-6.62374zM25.0117,9.4111c-0.0078,-0.1377 -0.0117,-0.2744 -0.0117,-0.4111c0,-3.86599 3.13401,-7 7,-7c3.86599,0 7,3.13401 7,7c0,0.1367 -0.0039,0.2734 -0.0117,0.4111c-2.21339,-0.92723 -4.58854,-1.40683 -6.9883,-1.4111c-2.39731,0.02799 -4.76796,0.50668 -6.9883,1.4111zM32,62c-4.5815,-0.00548 -8.42978,-3.44748 -8.9443,-8h17.8886c-0.51452,4.55252 -4.3628,7.99452 -8.9443,8zM55.1094,52h-46.2188c-2.14778,-0.00226 -3.88834,-1.74282 -3.8906,-3.8906c0.01407,-1.41687 0.78728,-2.71725 2.0254,-3.4063c5.54345,-3.14973 8.96985,-9.03241 8.9746,-15.4082v-3.2949c0.05146,-8.81239 7.18054,-15.94463 15.9929,-16c4.12517,0.02115 8.07601,1.66625 10.9971,4.5791c3.18579,3.12889 4.98947,7.40091 5.01,11.8662v2.85c0.00475,6.37579 3.43115,12.25847 8.9746,15.4082c1.23799,0.68898 2.01118,1.98917 2.0254,3.4059c-0.00226,2.14778 -1.74282,3.88834 -3.8906,3.8906z"
+                          ></path>
+                        </g>
+                      </g>
+                    </svg>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

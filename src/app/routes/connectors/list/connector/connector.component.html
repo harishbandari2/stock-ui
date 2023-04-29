@@ -1,0 +1,95 @@
+<div class="page-header page-header-light">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Applications</span> - Connect</h4>
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+
+    <div class="header-elements d-none">
+      <div class="d-flex justify-content-center">
+        <a class="btn btn-link btn-float text-default"
+          ><i class="icon-bars-alt text-primary"></i><span>Statistics</span></a
+        >
+        <a class="btn btn-link btn-float text-default"
+          ><i class="icon-calculator text-primary"></i> <span>Invoices</span></a
+        >
+        <a class="btn btn-link btn-float text-default"
+          ><i class="icon-calendar5 text-primary"></i> <span>Schedule</span></a
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+        <a href="widgets_content.html" class="breadcrumb-item">Widgets</a>
+        <span class="breadcrumb-item active">Content</span>
+      </div>
+
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+
+    <div class="header-elements d-none">
+      <div class="breadcrumb justify-content-center">
+        <a class="breadcrumb-elements-item">
+          <i class="icon-comment-discussion mr-2"></i>
+          Support
+        </a>
+
+        <div class="breadcrumb-elements-item dropdown p-0">
+          <a class="breadcrumb-elements-item dropdown-toggle" data-toggle="dropdown">
+            <i class="icon-gear mr-2"></i>
+            Settings
+          </a>
+
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item"><i class="icon-user-lock"></i> Account security</a>
+            <a class="dropdown-item"><i class="icon-statistics"></i> Analytics</a>
+            <a class="dropdown-item"><i class="icon-accessibility"></i> Accessibility</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item"><i class="icon-gear"></i> All settings</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="content">
+  <div class="d-flex align-items-start flex-column flex-md-row">
+    <!-- Left content -->
+    <div class="tab-content w-100 order-2 order-md-1">
+      <div class="tab-pane fade active show" id="activity">
+        <div class="row" *ngIf="componentList">
+          <div class="col-lg-2 col-md-3" *ngFor="let item of componentList">
+            <div class="card" style="cursor: pointer;" routerLink="/connectors/{{ item.id }}">
+              <div class="card-body text-center">
+                <div class="card-img-actions d-inline-block mb-3">
+                  <img
+                    class="img-fluid"
+                    src="assets/images/logo/{{ item.avatar }}.svg"
+                    width="120"
+                    height="120"
+                    alt=""
+                  />
+                </div>
+
+                <h6 class="font-weight-semibold mb-0">{{ item.name }}</h6>
+                <span class="d-block text-muted">Message Broker</span>
+              </div>
+
+              <div class="card-footer d-flex justify-content-around text-right p-0">
+                <a class="list-icons-item flex-fill p-2">
+                  10 Connections
+                </a>
+              </div>
+            </div>
+            <!-- </div> -->
+          </div>
+          <!-- /invoices -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

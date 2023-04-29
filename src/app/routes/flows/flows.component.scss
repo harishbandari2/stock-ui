@@ -1,0 +1,38 @@
+.page-header-content {
+  background: #fff;
+}
+
+.activeCard {
+  background: #3276b1 !important;
+}
+
+.customcard {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 5px;
+  width: 24.6%;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+
+  .customIcon {
+    display: block;
+    width: 100%;
+    text-align: center;
+    height: 50px;
+    line-height: 70px;
+    font-size: 40px;
+    vertical-align: bottom;
+  }
+  span {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background-color: #c4c7ca;
+    .cText {
+      line-height: 36px;
+      font-size: 18px;
+    }
+  }
+  // border-radius:0 ;
+}

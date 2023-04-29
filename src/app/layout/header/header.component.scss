@@ -1,0 +1,26 @@
+.navbar-nav-link {
+  padding: 8px;
+  // top: 5px;
+}
+.navbar-nav-link .badge {
+  position: absolute;
+  // top: 5px;
+  right: 0;
+  // inset: 4px 6px auto auto;
+}
+
+.navbar-brand {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.navbar-brand img {
+  position: relative;
+  top: 4px;
+}
+
+.userIcon {
+  font-size: 20px;
+  position: relative;
+  vertical-align: middle;
+}

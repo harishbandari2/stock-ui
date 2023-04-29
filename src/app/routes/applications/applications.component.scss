@@ -1,0 +1,69 @@
+.tablecards {
+  display: inline-flex;
+}
+
+// .card-body {
+//   padding: 20px;
+// }
+
+// .text-dark {
+//   font-size: 16px;
+//   font-weight: 600;
+// }
+
+.card:hover {
+  z-index: 1;
+  box-shadow: 0 6px 27px 0 rgba(0, 0, 0, 0.15);
+  -webkit-font-smoothing: subpixel-antialiased;
+}
+
+// .user-head {
+//   background-color: #fff;
+//   padding: 10px;
+//   min-height: 80px;
+//   display: flex;
+//   align-items: center;
+// }
+
+// .user-name {
+//   margin-left: 10px;
+//   margin-bottom: 10px;
+// }
+
+// .timeline-container:before {
+//   content: none;
+// }
+
+// .user-body {
+//   margin-left: -15px;
+//   margin-right: -15px;
+//   background-color: #fff;
+//   border: 1px solid #ddd;
+// }
+
+// .user-body .page-list li .mail-section {
+//   padding: 15px 20px;
+//   display: block;
+//   color: #6a6a6a;
+// }
+// .user-body .page-list li .mail-section a {
+//   color: #6a6a6a;
+// }
+
+// .user-body .page-list li {
+//   text-transform: capitalize;
+//   border-bottom: 1px solid #ddd;
+//   transition: all ease-in 0.3s;
+//   cursor: pointer;
+// }
+
+// .mail-section {
+//   padding: 15px 20px;
+//   display: block;
+//   color: #6a6a6a;
+// }
+
+// .user-head .user-name span {
+//   display: block;
+//   // color: #fff;
+// }

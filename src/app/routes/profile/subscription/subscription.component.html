@@ -1,0 +1,79 @@
+<div class="container mb-5 mt-5 px-3">
+  <div class="pricing card-deck flex-column flex-md-row mb-3" *ngIf="plans?.data">
+    <div *ngFor="let plan of plans.data" class="card card-pricing text-center px-3 mb-4">
+      <span class="h6 w-60 mx-auto px-4 py-1 rounded-bottom bg-indigo text-white shadow-sm">{{ plan.name }}</span>
+      <div class="bg-transparent card-header pt-4 border-0">
+        <h1 class="h1 font-weight-normal text-indigo-800 text-center mb-0" data-pricing-value="15">
+          <i class="bi bi-currency-rupee"></i><span class="price">{{ plan.price }}</span
+          ><span class="h6 text-muted ml-2">/Month</span>
+        </h1>
+      </div>
+      <div class="card-body pt-0">
+        <ul class="list-unstyled mb-4">
+          <li>Up to {{ plan.algos }} algos</li>
+          <li>chat support</li>
+          <li>All features</li>
+          <li>Monthly updates</li>
+        </ul>
+        <ng-container *ngIf="user?.account">
+          <button
+            (click)="openModel(content, plan)"
+            *ngIf="!user.account.subscription || user.account.subscription[0].name != plan.name"
+            class="btn btn-outline alpha-indigo text-indigo-800 border-indigo-600"
+            style="padding: 4px 12px;"
+            type="button"
+            [disabled]="plan.name == 'Trail' && user.account.trailclaimed"
+          >
+            <i class="icon-cart mr-2"></i> {{ plan.name == 'Trail' && user.account.trailclaimed ? 'Expired' : 'Order' }}
+          </button>
+          <ngcontainer *ngIf="user.account.subscription && user.account.subscription[0].name == plan.name">
+            <button
+              class=""
+              [class]="
+                user.account.status == 'Active'
+                  ? 'btn btn-outline alpha-success text-success-800 border-success-600'
+                  : 'btn btn-outline-danger text-warning-800 border-warning-600'
+              "
+              style="padding: 4px 12px;"
+              type="button"
+            >
+              <i class="bi bi-check-circle-fill mr-2"></i> {{ user.account.status }}
+            </button>
+            <div *ngIf="user.account.validuntil" class="mt-2">
+              <span class=" text-muted mr-2"> Valid Until</span>
+              <span [class]="user.account.status == 'Active' ? 'text-success-800' : 'text-danger-800'">{{
+                user.account.validuntil | date: 'dd/MM/yyyy'
+              }}</span>
+            </div>
+          </ngcontainer>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Instructions to Upgrade {{ checkedPlan.name }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="dropdown-divider"></div>
+  <div class="modal-body">
+    <div class="container mb-3 mt-2">
+      <!-- <h5>Instructions to Upgrade {{ checkedPlan.name }}</h5> -->
+      <ol>
+        <li>Make payment of Rs. {{ checkedPlan.price }} through UPI to Mobile no.8309403307</li>
+        <li>Send screenshot of payment receipt and mobile to Whatsapp no.8309403307</li>
+        <li>Your account will be activated within 1-6 hours</li>
+      </ol>
+      <p>*Note: There is No Refund</p>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn bg-indigo" (click)="modal.dismiss('Cross click')">
+      Close
+    </button>
+  </div>
+</ng-template>

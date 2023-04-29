@@ -1,0 +1,282 @@
+<div class="card node-config">
+  <ng-container *ngIf="!canvasMap.configNode.isTest">
+    <!-- <app-patch-overlay></app-patch-overlay> -->
+    <!-- <div class="card-header header-elements-md-inline node-heading">
+      <div class="media col-lg-4">
+        <a class="mr-3">
+          <img
+            src="../assets/images/logo/{{ canvasMap.configNode.component.avatar }}.svg"
+            width="34"
+            height="34"
+            class="rounded-circle"
+            alt=""
+          />
+        </a>
+        <div class="media-body mr-3">
+          <a class="media-title font-weight-semibold text-default">{{ canvasMap.configNode.component.name }}</a>
+          <div class="font-size-sm text-muted">{{ canvasMap.configNode.action.name }}</div>
+        </div>
+        <div class="form-group col-lg-8" *ngIf="canvasMap.configNode?.component.applicationId">
+          <select
+            [(ngModel)]="canvasMap.activeNode.connectionId"
+            (ngModelChange)="changeConnection($event)"
+            class="form-control form-control-sm"
+          >
+            <option value="null">Choose Connection</option>
+            <option *ngFor="let conn of canvasMap.configNode.connections" value="{{ conn.id }}">{{ conn.name }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="header-elements">
+        <ul class="list-inline list-inline-dotted mb-0 mt-2 mt-md-0">
+          <li class="list-inline-item"><i class="icon-info22 mr-2"></i> {{ lastSave }}</li>
+          <li class="list-inline-item" (click)="windowResize()">
+            <a [attr.class]="!showLarge ? 'icon-enlarge6' : 'icon-shrink6'"></a>
+          </li>
+          <li class="list-inline-item" (click)="saveNodeData()"><a class="icon-floppy-disk"></a></li>
+          <li class="list-inline-item" (click)="canvasMap.showConfig = !canvasMap.showConfig">
+            <a class="icon-cross2 icon-2x"></a>
+          </li>
+        </ul>
+      </div>
+    </div> -->
+
+    <ul class="panel">
+      <li style="width: 25%;">
+        <div class="header">
+          <div class="title">Incoming Data</div>
+        </div>
+        <div class="in-content " (scroll)="adjustPatches($event)" *ngIf="mappingFields?.inputNodes">
+          <tree-root
+            [nodes]="mappingFields.inputNodes"
+            [options]="options"
+            (toggleExpanded)="toggleExpanded($event, 'source')"
+          >
+            <ng-template #treeNodeTemplate let-node let-index="index">
+              <span class="custom-node">
+                <app-source
+                  [node]="{ key: node.data.key, title: node.data.title, dataElementType: node.data.dataElementType }"
+                >
+                </app-source>
+              </span>
+              <app-source-point [key]="node.data.key"></app-source-point>
+            </ng-template>
+          </tree-root>
+        </div>
+      </li>
+      <li style="width: 35%;">
+        <div class="header">
+          <div class="title">
+            <button
+              (click)="showTransform(content)"
+              type="button"
+              class="btn btn-outline btn-sm bg-primary border-primary text-primary-800"
+            >
+              <i class="icon-cog mr-2"></i>Add Functions
+            </button>
+          </div>
+        </div>
+        <div class="in-content formtree" *ngIf="mapper.sinkKeys.transformers">
+          <div class="col-md-10" *ngFor="let func of mapper.sinkKeys.transformers | keyvalue">
+            <div class="card border-grey-300" style="margin-top: 22px;">
+              <div class="card-header bg-light border-grey-300 header-elements-inline">
+                <h6 class="card-title">{{ func.value.name }}</h6>
+                <div class="header-elements">
+                  <div class="list-icons">
+                    <a class="list-icons-item" data-action="collapse"></a>
+                    <a class="list-icons-item" data-action="remove"></a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div class="card-body row">
+                <ul class="col-md-8" *ngIf="func.value.input">
+                  <li *ngFor="let funcInput of func.value.input" style="list-style: none;margin-bottom: 10px;">
+                    <app-sink
+                      [node]="{
+                        key: funcInput.key,
+                        title: funcInput.name,
+                        dataElementType: funcInput.dataType
+                      }"
+                      [function]="func.key"
+                    ></app-sink>
+                    <div class="bootstrap-tagsinput input-sm form-control-sm">
+                      <ng-container *ngFor="let key of func.value.inputs; let i = index">
+                        <span
+                          *ngIf="key.target.path == funcInput.key && key.type === 'map'"
+                          class="tag text-white bg-primary"
+                          >{{ key.source.title
+                          }}<span (click)="deleteFunctionMap(func.value.inputs, i)" data-role="remove"></span
+                        ></span>
+                      </ng-container>
+                    </div>
+                    <app-sink-point [key]="funcInput.key"></app-sink-point>
+                  </li>
+                </ul>
+                <ul class="col-md-4">
+                  <li *ngFor="let funcOutput of func.value.output">
+                    <app-source
+                      [node]="{
+                        key: funcOutput.key,
+                        title: funcOutput.name,
+                        dataElementType: funcOutput.dataType
+                      }"
+                      [function]="func.key"
+                    ></app-source>
+                    <app-source-point [key]="funcOutput.key"></app-source-point>
+                  </li>
+                </ul>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </li>
+      <hr width="1" size="500" />
+      <li style="width: 60%;">
+        <div class="header">
+          <div class="col-lg-6">
+            <div class="title" (click)="printTree()">{{ node.component.name }} Input</div>
+          </div>
+          <div class="col-lg-6 pointer">
+            <div class="btn-group" ngbDropdown>
+              <button
+                type="button"
+                class="btn btn-link p-0"
+                data-toggle="dropdown"
+                aria-expanded="false"
+                ngbDropdownToggle
+              >
+                <i class="fa fa-plus-circle"></i> Conditions
+              </button>
+              <div class="dropdown-menu dropdown-menu-right" style="" ngbDropdownMenu>
+                <a class="dropdown-item" (click)="addCondition()"><i class="icon-menu7"></i> Condition</a>
+                <a class="dropdown-item" (click)="addConditionSet()"><i class="icon-screen-full"></i> Conditionset</a>
+              </div>
+            </div>
+            <!-- <a (click)="showLarge = !showLarge" [attr.class]="!showLarge ? 'icon-enlarge6' : 'icon-shrink6'"></a> -->
+          </div>
+        </div>
+
+        <div class="in-content formtree" (scroll)="adjustPatches($event)" *ngIf="mappingFields?.outputNodes">
+          <tree-root
+            #tree
+            [nodes]="mappingFields.outputNodes"
+            [options]="options"
+            (toggleExpanded)="toggleExpanded($event, 'sink')"
+          >
+            <ng-template #treeNodeTemplate let-node let-index="index">
+              <app-sink-point [key]="node.data.key"></app-sink-point>
+              <span class="custom-node" (click)="nodeClick(node.data.key)">
+                <app-sink
+                  [node]="{
+                    key: node.data.key,
+                    title: node.data.title,
+                    dataElementType: node.data.dataElementType,
+                    mapper: node.data.pickList ? false : true
+                  }"
+                >
+                </app-sink>
+                <span class="text-danger" *ngIf="node.data.required">* </span>
+                <div class="btn-group position-static" ngbDropdown *ngIf="node.data.type == 'conditionset'">
+                  <button
+                    type="button"
+                    class="btn btn-link p-0"
+                    data-toggle="dropdown"
+                    aria-expanded="false"
+                    ngbDropdownToggle
+                  >
+                    <i class="fa fa-plus-circle"></i> Conditions
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right" style="" ngbDropdownMenu>
+                    <a class="dropdown-item" (click)="addCondition(node)"><i class="icon-menu7"></i> Condition</a>
+                    <a class="dropdown-item" (click)="addConditionSet(node)"
+                      ><i class="icon-screen-full"></i> Conditionset</a
+                    >
+                  </div>
+                </div>
+                <!-- <button type="button" class="btn btn-link p-0 mr-2" *ngIf="node.data.type == 'conditionset'"><i class="fa fa-plus-circle" ></i> Condition</button>
+                <button type="button" class="btn btn-link p-0" *ngIf="node.data.type == 'conditionset'"><i class="fa fa-plus-circle" ></i> Conditionset</button> -->
+                <tagify
+                  [settings]="{ mode: 'mix', duplicates: true }"
+                  (remove)="removeTag(node.data.key)"
+                  [ngModel]="mapper.mappingConfig[node.data.key]"
+                  (ngModelChange)="changedText($event, node.data)"
+                  *ngIf="(!node.data.children || node.data.title.includes('condition')) && !node.data.list"
+                >
+                </tagify>
+
+                <select
+                  *ngIf="node.data.list && index"
+                  [(ngModel)]="mapper.mappingConfig[node.data.key]"
+                  class="form-control w-100 m-0"
+                  style="margin-left: 4px; height: 30px;"
+                >
+                  <option *ngFor="let opt of node.data.list">{{ opt.name }}</option>
+                </select>
+              </span>
+            </ng-template>
+          </tree-root>
+        </div>
+      </li>
+    </ul>
+  </ng-container>
+  <!-- <ng-container *ngIf="canvasMap.configNode.isTest">
+    <app-testaudit></app-testaudit>
+  </ng-container> -->
+</div>
+
+<ng-template #content let-modal>
+  <div class="modal-header bg-primary">
+    <h5 class="modal-title" id="modal-basic-title">Add Tranformer</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table class="table text-nowrap">
+      <thead>
+        <tr></tr>
+      </thead>
+      <tbody *ngIf="transformers">
+        <tr *ngFor="let item of transformers">
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="mr-3">
+                <!-- <a>
+                      <img
+                        src="../assets/images/ui/{{ item.logo }}.svg"
+                        class="rounded-circle"
+                        width="32"
+                        height="32"
+                        alt=""
+                      />
+                    </a> -->
+              </div>
+              <div>
+                <a (click)="clickComponent(item)" class="text-default font-weight-semibold letter-icon-title pointer">
+                  {{ item.name }}</a
+                >
+                <div class="text-muted font-size-sm">Select Transformer</div>
+              </div>
+            </div>
+            <div [ngClass]="activeComponentId === item.id ? 'collapse show' : 'collapse'" style="">
+              <div class="card-body">
+                <a
+                  (click)="addFunction(function)"
+                  class="list-group-item list-group-item-action pointer"
+                  *ngFor="let function of item.transformers"
+                >
+                  <i class="icon-circles mr-2"></i> {{ function.name }}
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="save(flowForm.value)">Save</button>
+  </div>
+</ng-template>

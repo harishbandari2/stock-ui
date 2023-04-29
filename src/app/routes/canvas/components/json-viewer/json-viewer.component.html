@@ -1,0 +1,46 @@
+<ul>
+  <li *ngFor="let row of data | keyvalue: originalOrder">
+    <div class="hoverable">
+      <ng-container [ngSwitch]="row.value | type">
+        <ng-container *ngSwitchCase="'string'"
+          ><span class="key">{{ row.key }}</span
+          >: <span class="string value">"{{ row.value }}"</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'number'"
+          ><span class="key">{{ row.key }}</span
+          >: <span class="number value">{{ row.value }}</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'null'"
+          ><span class="key">{{ row.key }}</span
+          >: <span class="null value">null</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'boolean'"
+          ><span class="key">{{ row.key }}</span
+          >: <span class="boolean value">{{ row.value }}</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'objectId'"
+          ><span class="key">{{ row.key }}</span
+          >: <span class="objectId value">ObjectId("{{ row.value.toString() }}")</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'date'"
+          ><span class="key">{{ row.key }}</span
+          >: <span class="date value">{{ row.value.toJSON() }}</span></ng-container
+        >
+        <ng-container *ngSwitchCase="'object'">
+          <span class="key"> {{ row.key }}</span
+          >:
+          <span (click)="clicked($event, row)" class="collapsed tog"></span>
+          <span class="notation">{{ 'Object' }}</span>
+          <app-json-viewer [data]="row.value"></app-json-viewer>
+        </ng-container>
+        <ng-container *ngSwitchCase="'array'">
+          <span class="key"> {{ row.key }}</span
+          >:
+          <span (click)="clicked($event, row)" class="collapsed tog"></span>
+          <span class="notation">{{ 'Array' }}</span>
+          <app-json-viewer [data]="row.value"></app-json-viewer>
+        </ng-container>
+      </ng-container>
+    </div>
+  </li>
+</ul>

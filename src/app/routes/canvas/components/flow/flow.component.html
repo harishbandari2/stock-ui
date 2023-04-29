@@ -1,0 +1,172 @@
+<ng-container *ngFor="let item of node; let index = index; trackBy: identify">
+  <ng-container *ngTemplateOutlet="tree; context: { node: item, index: index }"> </ng-container>
+</ng-container>
+
+<div [hidden]="true">
+  <!-- <tree-root #tree [nodes]="node" [options]="options"></tree-root> -->
+</div>
+
+<ng-template #tree let-node="node" let-index="index" let-parent="parent">
+  <ng-container *ngIf="node.component.name !== 'Condition' && node.component.name !== 'ForEach'">
+    <div class="flow">
+      <div class="joint" *ngIf="index == 0 && node.order !== 1 && !parent">
+        <button
+          (click)="openApps(index, parent, node)"
+          type="button"
+          class="fab-menu-btn btn bg-blue btn-float rounded-round btn-icon"
+        >
+          <i class="fab-icon-open icon-plus3"></i>
+          <i class="fab-icon-close icon-cross2"></i>
+        </button>
+      </div>
+      <div class="info-box" (click)="openMapping(node)">
+        <div class="errorComponent" *ngIf="canvasService.errorComponents[node.id]">
+          <img src="../assets/images/logo/error.png" />
+        </div>
+        <div class="info-box-header">
+          <div class="mr-3">
+            <a>
+              <img
+                src="../assets/images/logo/{{ node.component.logo }}.svg"
+                class="rounded-circle"
+                width="42"
+                jeight="42"
+                alt=""
+              />
+            </a>
+          </div>
+          <div class="card-text">
+            <div class="info-box-text" title="AmazonS3">{{ node.component.name }}</div>
+            <div class="sub-text">
+              {{ node.action && node.action.name ? node.action.name : 'add action' }}
+            </div>
+          </div>
+        </div>
+        <div class="card-icons" (click)="removeNode(node, exp)">
+          <i class="icon-trash"></i>
+        </div>
+      </div>
+      <div class="joint">
+        <div class="plus" (click)="openApps(index + 1, parent, node)">
+          <i class="icon-plus3"></i>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="node.component.name === 'Condition' || node.component.name === 'ForEach'">
+    <ng-container *ngTemplateOutlet="logic; context: { node: node, index: index, parent: exp }"> </ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #logic let-node="node" let-index="index" let-parent="parent">
+  <div
+    class="condition-plus-section"
+    [ngClass]="node.component.name === 'Condition' ? 'ifElse-section' : 'forEach-section'"
+  >
+    <ul class="all-condition-sections">
+      <li class="first-li">
+        <div class="if-else-section">
+          <div class="heading">
+            <div class="info-box" (click)="expandNode(node)">
+              <div class="info-box-header">
+                <div class="mr-3">
+                  <a>
+                    <img
+                      src="assets/images/logo/{{ node.component.name === 'Condition' ? 'condition.png' : 'loop.png' }}"
+                      class="rounded-circle"
+                      width="42"
+                      jeight="42"
+                      alt=""
+                    />
+                  </a>
+                </div>
+                <div class="card-text">
+                  <div class="info-box-text" [title]="node.component.name">{{ node.component.name }}</div>
+                  <!-- <div class="sub-text">
+                    {{ node.action && node.action.apiName ? node.action.apiName : 'action' }}
+                  </div> -->
+                </div>
+              </div>
+              <div class="card-icons" (click)="removeNode(node, exp)">
+                <i class="icon-trash"></i>
+              </div>
+            </div>
+          </div>
+          <ul class="condition-list" *ngIf="node.children && node.children.length > 0 && expand[node.id]">
+            <ng-container *ngFor="let exp of node.children; let in = index">
+              <li>
+                <div class="if-condition" [ngClass]="{ 'else-condition': index == node.children.length - 1 }">
+                  <ul class="if-list">
+                    <li style="display: inline-block;">
+                      <div class="flow">
+                        <div class="info-box" (click)="openMapping(exp)">
+                          <div class="info-box-header">
+                            <div class="mr-3">
+                              <a>
+                                <img
+                                  src="assets/images/logo/{{
+                                    exp.component.name === 'loop'
+                                      ? 'list.svg'
+                                      : node.children[in + 1]
+                                      ? 'if.png'
+                                      : 'default.png'
+                                  }}"
+                                  class="rounded-circle"
+                                  width="42"
+                                  height="42"
+                                  alt=""
+                                />
+                              </a>
+                            </div>
+                            <div class="card-text">
+                              <div class="info-box-text" title="AmazonS3">{{ exp.component.name }}</div>
+                              <div class="sub-text" *ngIf="exp.component.name === 'Loop' || node.children[in + 1]">
+                                expression
+                              </div>
+                            </div>
+                          </div>
+                          <!-- <div class="card-icons" (click)="removeNode(item.id)">
+                            <i class="icon-trash"></i>
+                          </div> -->
+                        </div>
+                        <div class="joint">
+                          <div class="plus" (click)="openApps(0, parent, exp)">
+                            <i class="icon-plus3"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <!-- <li>
+                      <div class="plus-section">
+                        <a href="javascript:void(0)" class="plus-new" (click)="addComponent(index, exp, index)">
+                          <i nz-icon type="plus-circle" theme="outline"></i>
+                        </a>
+                      </div>
+                    </li> -->
+                    <!-- <li class="dc-component"> -->
+
+                    <li class="nest" *ngFor="let child of exp.children; let i = index">
+                      <ng-container *ngTemplateOutlet="tree; context: { node: child, index: i, parent: exp }">
+                      </ng-container>
+                    </li>
+                    <!-- </li> -->
+                  </ul>
+                </div>
+              </li>
+              <li class="add-condition" *ngIf="node.children[in + 1]">
+                <a href="javascript:void(0)" (click)="addExpression($event, index, node)">
+                  Add else if
+                </a>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="joint">
+    <div class="plus" (click)="openApps(index + 1)">
+      <i class="icon-plus3"></i>
+    </div>
+  </div>
+</ng-template>

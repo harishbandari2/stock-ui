@@ -1,0 +1,204 @@
+<div class="page-header">
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a href="index.html" class="breadcrumb-item"> Home</a>
+        <a href="widgets_content.html" class="breadcrumb-item">Flow</a>
+        <span class="breadcrumb-item active">{{ flow.name }}</span>
+      </div>
+
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+
+    <div class="header-elements d-none">
+      <div class="breadcrumb justify-content-center">
+        <a class="breadcrumb-elements-item"> {{ lastTest }} </a>
+        <span class="text-danger breadcrumb-elements-item" *ngIf="canvasService.globalFlowError">
+          <i class="icon-info22 mr-2"></i>{{ canvasService.globalFlowError }}Errors in flow</span
+        >
+
+        <div class="breadcrumb-elements-item dropdown p-0 pointer">
+          <a (click)="testFlow()" class="breadcrumb-elements-item" data-toggle="dropdown">
+            <i class="icon-play3 mr-2"></i>
+            Start Flow
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="canvas" [ngStyle]="{ 'max-height': mapper.showConfig ? '40%' : '100%' }">
+    <div class="row text-nowrap adjust" *ngIf="flow.node?.length > 0">
+      <ng-container>
+        <app-flow [node]="flow.node" (onClick)="flowClick($event)"></app-flow>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="flow.node?.length == 0">
+      <div class="col-md-4" style="margin: 20px auto;">
+        <div class="card card-body border-top-danger text-center">
+          <h6 class="m-0 font-weight-semibold">Add Event Trigger</h6>
+          <p class="mb-3 text-muted">When this happen Select the trigger App</p>
+
+          <div>
+            <ul class="fab-menu fab-menu-top" data-fab-toggle="click" data-fab-state="close">
+              <li>
+                <button
+                  (click)="openApps(1)"
+                  type="button"
+                  class="fab-menu-btn btn bg-blue btn-float rounded-round btn-icon"
+                >
+                  <i class="fab-icon-open icon-plus3"></i>
+                  <i class="fab-icon-close icon-cross2"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div
+  class="card addevent-flyout"
+  [hidden]="!canvasService.openAppPanel"
+  [ngClass]="{ 'full-width': activeTab === 'mapping' }"
+>
+  <div class="header">
+    <div class="left-content">
+      <div class="title" *ngIf="sideContent !== 'mapping'">Add Components</div>
+      <ng-container *ngIf="sideContent === 'mapping'">
+        <div>
+          <img
+            src="../assets/images/logo/{{ mappingNode.component.logo }}.svg"
+            width="34"
+            height="34"
+            class="rounded-circle"
+            alt=""
+          />
+        </div>
+        <div class="title">
+          <a>{{ mappingNode.component.name }}</a>
+          <div class="caption">{{ mappingNode.action ? mappingNode.action.name : 'add action' }}</div>
+        </div>
+      </ng-container>
+    </div>
+
+    <button type="button" (click)="saveConfig()" class="btn btn-success btn-sm mr-2" *ngIf="sideContent === 'mapping'">
+      <i class="icon-floppy-disk mr-2"></i> Save
+    </button>
+    <button type="button" class="btn btn-light btn-sm" (click)="closeSidePanel()">
+      <i class="icon-cross2 mr-2"></i> Cancel
+    </button>
+
+    <!-- <div class="pointer" (click)="canvasService.openAppPanel = !canvasService.openAppPanel">
+      <i class="icon-cross2"></i>
+    </div> -->
+  </div>
+  <div class="components" *ngIf="sideContent !== 'mapping'">
+    <div class="box-wrapper d-flex flex-wrap">
+      <div class="form-search w-100 ">
+        <div class="search-icon d-flex align-items-center justify-content-center">
+          <i class="icon-search4"></i>
+        </div>
+        <input
+          id="search-app"
+          class="search-input w-100"
+          type="text"
+          name="searchInputBox"
+          placeholder="Search from 100+ Apps"
+        />
+      </div>
+
+      <a
+        class="box d-flex flex-column align-items-center justify-content-center pointer"
+        *ngFor="let component of componentList"
+        (click)="addNode(null, component)"
+      >
+        <div class="box-icon">
+          <img src="../assets/images/logo/{{ component.logo }}.svg" />
+        </div>
+
+        <div class="box-title">
+          <p style="font-size: 14px">{{ component.name }}</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="mapping" *ngIf="sideContent === 'mapping'">
+    <ul class="nav nav-tabs nav-tabs-bottom w-100">
+      <li class="nav-item pointer">
+        <a class="nav-link" [ngClass]="{ active: activeTab === 'configuration' }" (click)="clickTab('configuration')"
+          >Configuration</a
+        >
+      </li>
+      <li class="nav-item pointer">
+        <a class="nav-link" [ngClass]="{ active: activeTab === 'mapping' }" (click)="clickTab('mapping')">Mapping</a>
+      </li>
+    </ul>
+    <form class="d-flex justify-content-center" *ngIf="activeTab === 'configuration'">
+      <div class="row" style="width: 54%;">
+        <div class="col-xl-12">
+          <div class="form-group required">
+            <label for="dateOfBirth" required="true">Label:</label>
+            <div class="input-group">
+              <input
+                type="text"
+                id="dateOfBirth"
+                [(ngModel)]="mappingNode.component.label"
+                [ngModelOptions]="{ standalone: true }"
+                class="form-control"
+                placeholder="gmail"
+                required="true"
+              />
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="mappingNode.component.requiredFields">
+          <div class="col-xl-12" *ngIf="mappingNode.component.requiredFields['action']">
+            <div class="form-group">
+              <label for="dateOfBirth">Action <span class="text-danger">*</span>:</label>
+              <div class="input-group">
+                <select
+                  id="transactionType"
+                  class="form-control"
+                  [(ngModel)]="mappingNode.action.name"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="changeAction($event)"
+                >
+                  <option *ngFor="let opt of ['licenseTypes']" [value]="opt">{{ opt }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-12" *ngIf="mappingNode.component.requiredFields['connection']">
+            <div class="form-group">
+              <label for="dateOfBirth">Connection<span class="text-danger">*</span>:</label>
+              <div class="input-group">
+                <select
+                  id="transactionType"
+                  class="form-control"
+                  [(ngModel)]="mappingNode.connectionId"
+                  [ngModelOptions]="{ standalone: true }"
+                  (ngModelChange)="changeConnection($event)"
+                  placeholder="Type"
+                >
+                  <option *ngFor="let opt of ['licenseTypes', 'Free']" [value]="opt">{{ opt }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </form>
+
+    <ng-container *ngIf="activeTab === 'mapping'">
+      <app-mapper [node]="mappingNode"></app-mapper>
+    </ng-container>
+  </div>
+
+  <!-- <div style="position: absolute; bottom: 0;">save</div> -->
+</div>

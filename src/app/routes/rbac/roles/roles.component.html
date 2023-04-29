@@ -1,0 +1,195 @@
+<div class="page-header">
+  <div class="page-header-content header-elements-md-inline">
+    <div class="page-title d-flex">
+      <h4><span class="font-weight-semibold">Roles</span></h4>
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+    <!-- <div class="header-elements d-none">
+        <div class="d-flex justify-content-center">
+          <a routerLink="/apps" class="btn btn-link btn-float text-default"
+            ><i class="icon-meter-fast text-primary"></i> <span>Dashboard</span></a
+          >
+          <a class="btn btn-link btn-float text-default"
+            ><i class="icon-stats-dots text-primary"></i><span>Monitor</span></a
+          >
+  
+          <a routerLink="/flows" class="btn btn-link btn-float text-default"
+            ><i class="icon-cogs text-primary"></i> <span>Flows</span></a
+          >
+        </div>
+      </div> -->
+  </div>
+
+  <div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
+    <div class="d-flex">
+      <div class="breadcrumb">
+        <a href="index.html" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+        <a href="widgets_content.html" class="breadcrumb-item">Widgets</a>
+        <span class="breadcrumb-item active">Content</span>
+      </div>
+
+      <a class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    </div>
+
+    <div class="header-elements d-none">
+      <div class="breadcrumb justify-content-center">
+        <a class="breadcrumb-elements-item">
+          <!-- <button type="button" class="btn btn-outline bg-primary text-primary border-primary">
+                          <i class="icon-plus2 mr-2"></i>
+                          Create Flow
+                      </button> -->
+          <button
+            type="button"
+            (click)="openModel(content)"
+            class="btn btn-outline alpha-success text-success-800 border-success-600"
+          >
+            <i class="icon-plus2 mr-2"></i> Roles
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Inner container -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Roles</h3>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body p-0">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th style="width: 10px">#</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Operations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trade of roleList; let i = index">
+              <td>{{ i + 1 }}.</td>
+              <td>{{ trade.name }}</td>
+              <td>{{ trade.description }}</td>
+              <td><a (click)="assignPermissions(permissionContent, i)">Permissions</a></td>
+              <td>
+                <a class="btn btn-tool">
+                  <i class="fas fa-pen"></i>
+                </a>
+
+                <a class="btn btn-tool" (click)="deleteTrade(trade, i)">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+          <!-- <tfoot>
+              <tr>
+                <th></th>
+                <th>Total</th>
+                <th> {{totalAmount}}</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </tfoot> -->
+        </table>
+      </div>
+      <!-- /.card-body -->
+    </div>
+    <!-- /inner container -->
+  </div>
+
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Create New</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <!-- <div class="ml-2 row">
+          <div class="customcard" *ngFor="let card of createNew" (click)="activeCard(card)">
+            <span [ngClass]="{ activeCard: card.name == activeNode?.name }">
+              <i class="{{ card.icon }} icon-2x text-white customIcon"></i>
+              <div class="cText text-white mb-0">{{ card.name }}</div>
+            </span>
+          </div>
+        </div> -->
+      <!-- <div class="row mb-2">
+          <div class="col-xl-12">
+            <p class="card-footer mt-2">
+              {{ activeNode.description }}
+            </p>
+          </div>
+        </div> -->
+      <form [formGroup]="roleForm">
+        <div class="row ">
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="dateOfBirth">Name</label>
+              <div class="input-group">
+                <input id="dateOfBirth" formControlName="name" class="form-control" placeholder="role name" />
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-6">
+            <div class="form-group">
+              <label for="dateOfBirth">Description</label>
+              <div class="input-group">
+                <input id="dateOfBirth" formControlName="description" class="form-control" placeholder="role desc" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" [disabled]="roleForm.invalid" class="btn bg-default" (click)="save(roleForm.value)">
+        Save
+      </button>
+    </div>
+  </ng-template>
+
+  <ng-template #permissionContent let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Create New</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row ">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th style="width: 10px">#</th>
+              <th>Entite</th>
+              <th>Permissions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let entity of permissionList; let i = index">
+              <td>{{ i + 1 }}.</td>
+              <td>{{ entity.entitie }}</td>
+              <td>
+                <ng-multiselect-dropdown
+                  [placeholder]="'Select permissions'"
+                  [settings]="dropdownSettings"
+                  [data]="entity.permissions"
+                  [(ngModel)]="entity.grantedPermissions"
+                  (onSelect)="clickPermission($event)"
+                  (onSelectAll)="onSelectAll($event)"
+                >
+                </ng-multiselect-dropdown>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn bg-default" (click)="savePermissions()">Save</button>
+    </div>
+  </ng-template>
+</div>

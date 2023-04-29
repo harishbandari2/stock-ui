@@ -1,0 +1,23 @@
+<aside id="sidebar" [ngClass]="menu ? 'sidebar open' : 'sidebar'">
+  <ul class="sidebar-nav" id="sidebar-nav">
+    <li class="nav-item" [ngClass]="{ active: active == 'dashbaord' }" routerLink="/">
+      <a class="nav-link " (click)="activeLink('dashbaord')">
+        <i class="bi bi-grid-fill"></i> <span>Dashboard</span>
+      </a>
+    </li>
+    <li class="nav-item" [ngClass]="{ active: active == 'strategies' }" routerLink="/strategy">
+      <a class="nav-link " (click)="activeLink('strategies')"><i class="bi bi-cpu"></i> <span>Strategies</span> </a>
+    </li>
+    <li class="nav-item" [ngClass]="{ active: active == 'dict' }" routerLink="/portfolio">
+      <a class="nav-link " (click)="activeLink('dict')"><i class="bi bi-folder-fill"></i> <span>Portfolios</span> </a>
+    </li>
+    <li class="nav-item" [ngClass]="{ active: active == 'broker' }" routerLink="/apps">
+      <a class="nav-link " (click)="activeLink('broker')"><i class="bi bi-plug-fill"></i> <span>Brokers</span> </a>
+    </li>
+    <li class="nav-item" [ngClass]="{ active: active == 'subscription' }" routerLink="/profile/subscription">
+      <a class="nav-link " (click)="activeLink('subscription')">
+        <i class="bi bi-calendar2-week"></i> <span>Subscription</span>
+      </a>
+    </li>
+  </ul>
+</aside>

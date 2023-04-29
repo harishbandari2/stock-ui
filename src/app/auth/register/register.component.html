@@ -1,0 +1,116 @@
+<div class="navbar navbar-expand-md navbar-dark bg-indigo fixed-top">
+  <div class="navbar-brand">
+    <a href="index.html" class="d-inline-block">
+      <img src="../assets/images/logo/algo.svg" alt="" style="height:38px" />
+    </a>
+  </div>
+</div>
+
+<div class="content d-flex justify-content-center align-items-center mt-3">
+  <!-- Login form -->
+  <form class="login-form" [formGroup]="form">
+    <div class="card mb-0">
+      <div class="card-body">
+        <div class="text-center mb-3">
+          <i class="bi bi-person icon-2x text-slate-300 border-slate-300 border-3 rounded-round p-3 mb-3 mt-1"></i>
+          <h5 class="mb-0">Register for new account</h5>
+          <span class="d-block text-muted">Provide all details</span>
+        </div>
+
+        <div class="form-group form-group-feedback form-group-feedback-left">
+          <input type="email" class="form-control" formControlName="email" placeholder="Email*" required />
+          <div class="form-control-feedback">
+            <i class="icon-envelop3 text-muted"></i>
+          </div>
+        </div>
+        <div class="form-group form-group-feedback form-group-feedback-left">
+          <input
+            type="tel"
+            pattern="[0-9]{10}"
+            class="form-control"
+            formControlName="mobile"
+            placeholder="Mobile*"
+            required
+            [readonly]="isOTPVerified"
+          />
+          <div class="form-control-feedback">
+            <i class="bi bi-telephone-fill text-muted"></i>
+          </div>
+        </div>
+        <div class="form-group form-group-feedback form-group-feedback-left">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="firstName"
+            placeholder="Firstname*"
+            autocomplete="off"
+          />
+          <div class="form-control-feedback">
+            <i class="icon-user text-muted"></i>
+          </div>
+        </div>
+        <div class="form-group form-group-feedback form-group-feedback-left">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="lastName"
+            placeholder="LastName*"
+            autocomplete="off"
+          />
+          <div class="form-control-feedback">
+            <i class="icon-user text-muted"></i>
+          </div>
+        </div>
+
+        <div class="form-group form-group-feedback form-group-feedback-left">
+          <input type="password" class="form-control" formControlName="password" placeholder="Password*" />
+          <div class="form-control-feedback">
+            <i class="icon-lock2 text-muted"></i>
+          </div>
+        </div>
+        <div class="form-group form-group-feedback form-group-feedback-left">
+          <input
+            type="password"
+            formControlName="confirmpassword"
+            class="form-control"
+            placeholder="Confirm Password*"
+            autocomplete="off"
+          />
+          <div class="form-control-feedback">
+            <i class="icon-lock2 text-muted"></i>
+          </div>
+        </div>
+        <ng-container *ngIf="isOTPVerified">
+          <div class="form-group form-group-feedback form-group-feedback-left">
+            <input type="password" formControlName="otp" class="form-control" placeholder="OTP*" autocomplete="off" />
+            <div class="form-control-feedback">
+              <i class="bi bi-key text-muted"></i>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" (click)="submit(form.value)" class="btn bg-primary-800 btn-block">
+              Sign Up <i class="icon-circle-right2 ml-2"></i>
+            </button>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!isOTPVerified">
+          <div class="form-group">
+            <button type="submit" (click)="getOTP(form.value)" class="btn bg-primary-800 btn-block">
+              Get Mail OTP <i class="icon-circle-right2 ml-2"></i>
+            </button>
+          </div>
+        </ng-container>
+
+        <div class="form-group text-center text-muted content-divider">
+          <span class="px-2">Already have have an account?</span>
+        </div>
+
+        <div class="form-group">
+          <a routerLink="/auth" class="btn btn-light btn-block">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!-- /login form -->
+</div>
