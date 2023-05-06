@@ -65,7 +65,7 @@ export class TradesComponent implements OnInit {
     this.app = strategy.data;
     this.createFrom(this.app);
     // this.flowForm.patchValue(this.app)
-    this.tableState.totalCapital = this.app.margin * this.app.multiplier;
+    this.tableState.totalCapital = this.app.margin;
     this.getTrades();
   }
 

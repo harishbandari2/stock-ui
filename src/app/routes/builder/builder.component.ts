@@ -1,76 +1,66 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Apps, Trade } from '@app/consts/api.consts';
 import { BackendService } from '@app/services';
 import * as _ from 'lodash';
 import { cloneDeep } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-builder',
   templateUrl: './builder.component.html',
   styleUrls: ['./builder.component.scss']
 })
-export class BuilderComponent implements OnInit {
-  strategyId = '';
+export class BuilderComponent implements OnInit, AfterViewInit {
+  @ViewChild('toggleSearch', { static: false })
+  toggleSearch!: ElementRef;
+  @ViewChild('menuSearch', { static: false })
+  menuSearch!: ElementRef;
 
+  strategyId = '';
+  isSearchOpen = false;
+  // searchItem = '';
   strikes: any = [];
-  index: any = ['NIFTY', 'BANKNIFTY', 'FINNIFTY'];
+  stocks: any[] = [{ id: 'Type 2 or more characters', name: 'to start seraching', virtual: true }];
   dropdownSettings = {
     idField: 'id',
     textField: 'name'
   };
+  isSearchDisable = false;
 
   brokerSettings = {
     idField: 'id',
     textField: 'name',
     singleSelection: true
   };
-
-  days: any = [];
   connections: any = [];
-
-  selectedDays: any = [];
-
-  indexInfo = {
-    lotSize: {
-      BANKNIFTY: 25,
-      NIFTY: 50,
-      FINNIFTY: 40
-    }
-  };
+  modelChanged: Subject<string> = new Subject<string>();
 
   strategy: any = {
     name: null,
-    startTime: 925,
-    endTime: 1525,
+    type: 'POSITIONAL',
     overallStoploss: null,
     overallTarget: null,
-    multiplier: 1,
-    margin: 175000,
-    days: null,
+    orderStoploss: null,
+    orderTarget: null,
+    margin: 100000,
+    maxpositions: null,
+    maxopendays: null,
     sltoCost: false,
-    squareOffallLegs: false,
-    reasapALL: false,
-    reasapALLConfig: {
-      repeatCount: 1,
-      qmultiplier: 1,
-      exitLastnthLegs: null
-    },
     status: 'DISABLED',
     brokers: [],
     enable: false
   };
 
   position: any = {
-    index: 'NIFTY',
-    lot: 1,
-    orderType: 'CE',
-    strike: {
-      type: 'SPOT',
-      value: 0
-    },
-    orderSide: 'SELL',
+    exchange: 'NSE',
+    quantity: 1,
+    orderType: 'LIMIT',
+    orderSide: 'BUY',
+    symbol: '',
+    price: 0,
     stoploss: {
       type: null,
       value: null
@@ -87,45 +77,33 @@ export class BuilderComponent implements OnInit {
     reentry: {
       type: null,
       value: null
-    }
+    },
+    status: 'Open'
   };
 
   orderLegs: any = [];
+  listenerFn: () => void;
 
-  constructor(private backendService: BackendService, private route: ActivatedRoute, private toast: ToastrService) {
+  constructor(
+    private renderer: Renderer2,
+    private backendService: BackendService,
+    private route: ActivatedRoute,
+    private toast: ToastrService
+  ) {
     this.route.params.subscribe(params => {
       this.strategyId = params['id'];
       console.log(params, this.strategyId);
     });
 
-    this.generateStrikes(-10, 10);
+    this.modelChanged.pipe(debounceTime(500)).subscribe(key => {
+      if (key) this.searchCall(key);
+    });
   }
 
   ngOnInit() {
     if (this.strategyId) this.getStartegy(this.strategyId);
     this.getConnections();
-    this.days = [
-      {
-        id: 1,
-        name: 'Monday'
-      },
-      {
-        id: 2,
-        name: 'Tuesday'
-      },
-      {
-        id: 3,
-        name: 'Wednesday'
-      },
-      {
-        id: 4,
-        name: 'Thursday'
-      },
-      {
-        id: 5,
-        name: 'Friday'
-      }
-    ];
+
     this.connections = [
       {
         id: 'paper',
@@ -138,7 +116,7 @@ export class BuilderComponent implements OnInit {
     const strategy: any = await this.backendService.getService(Trade.strategy, appName).toPromise();
     // console.log(strategy);
     this.strategy = strategy.data;
-    this.orderLegs = _.cloneDeep(this.strategy.positions);
+    this.orderLegs = _.cloneDeep(this.strategy.positions || []);
   }
 
   async getConnections() {
@@ -148,9 +126,33 @@ export class BuilderComponent implements OnInit {
   }
 
   addPosition(position: any) {
-    this.orderLegs.push(_.cloneDeep(position));
+    console.log(position, this.strategy);
+    const leg: any = _.cloneDeep(position);
+    const order = this.prepareOrder(leg);
 
-    // console.log(position, this.orderLegs);
+    this.orderLegs.push(order);
+    console.log(position, order);
+    setTimeout(() => {
+      this.isSearchDisable = false;
+      this.position.symbol = '';
+    }, 100);
+  }
+
+  prepareOrder(order: any) {
+    const { margin, maxpositions, orderStoploss, orderTarget, type } = this.strategy;
+    const orderMargin = margin / maxpositions;
+    const qty = Math.floor(orderMargin / order.price);
+    order.quantity = qty;
+    order.type = type;
+    order.stoploss = {
+      type: 'percent',
+      value: orderStoploss
+    };
+    order.target = {
+      type: orderTarget ? 'percent' : null,
+      value: orderTarget ? orderTarget : null
+    };
+    return order;
   }
 
   deleteOrder(i: number) {
@@ -170,8 +172,8 @@ export class BuilderComponent implements OnInit {
   updateTrailStoploss(i: number) {
     if (this.orderLegs[i]['stoploss']['type']) {
       this.orderLegs[i].tsl.type = 'percent';
-      this.orderLegs[i].tsl.valuex = 5;
-      this.orderLegs[i].tsl.valuey = 5;
+      this.orderLegs[i].tsl.valuex = 1;
+      this.orderLegs[i].tsl.valuey = 1;
     }
   }
 
@@ -184,43 +186,45 @@ export class BuilderComponent implements OnInit {
     this.orderLegs[i].reentry.type = 'RECOST';
   }
 
-  changeReasapALL(enable: any) {
-    this.orderLegs.forEach((el: any) => {
-      if (enable) {
-        el.reentry = {
-          type: 'REASAPALL',
-          value: null
-        };
-      } else {
-        el.reentry = {
-          type: null,
-          value: null
-        };
-      }
+  clickSearch() {
+    if (this.isSearchDisable) return;
+    this.position.symbol = '';
+    this.modelChanged.next('');
+    this.isSearchOpen = true;
+    this.stocks = [{ ticker: 'Type 3 or more characters', name: 'to start seraching', virtual: true }];
+  }
+
+  changeSearch(e: any) {
+    if (e.length > 2) {
+      this.modelChanged.next(e);
+    } else this.stocks = [{ ticker: 'Type 3 or more characters', name: 'to start seraching', virtual: true }];
+  }
+
+  async searchCall(e: string) {
+    console.log(e);
+    const scrips: any = await this.backendService.getService(Trade.scrip, e).toPromise();
+    console.log(scrips);
+    this.stocks = scrips.data;
+
+    // let url = `http://localhost:3000/scrips/scrip/${e}`
+    // this.http.get(url).subscribe((res: any) => {
+    //   this.stocks = res.data;
+    this.stocks = this.stocks.map(el => {
+      return { ticker: el.symbol, name: el.company };
     });
-
-    // this.strikes = [];
-    // if (stock.includes('BANKNIFTY')) {
-    //   this.strikes = this.ticks;
-    // } else this.strikes = this.ticks.map((el: any) => el / 2);
+    // });
   }
 
-  generateStrikes(rangeStart: number, rangeEnd: number) {
-    for (let i = rangeStart; i <= rangeEnd; i++) {
-      const strike: any = {};
-      if (i == 0) {
-        strike.id = i;
-        strike.name = `ATM`;
-      } else if (i < 0) {
-        strike.id = i;
-        strike.name = `ITM ${Math.abs(i)}`;
-      } else {
-        strike.id = i;
-        strike.name = `OTM ${i}`;
-      }
-      this.strikes.push(strike);
-    }
+  async stockSelected(stock: any) {
+    if (stock.virtual) return;
+    console.log(stock);
+    // let ltp: any = await this.backendService.getService(Trade.ltp, stock.ticker).toPromise();
+    this.position.price = 250;
+    this.isSearchOpen = false;
+    this.isSearchDisable = true;
+    this.position.symbol = stock.ticker;
   }
+
   addSL(type: string, index: number) {
     this.orderLegs[index]['stoploss']['type'] = type;
   }
@@ -256,38 +260,96 @@ export class BuilderComponent implements OnInit {
     this.orderLegs[index]['reentry']['value'] = null;
   }
 
-  changeStrikeType(id: any) {
+  changeType(id: any) {
     console.log(id);
-    if (id == 'SPOT') {
-      this.position.strike.type = 'SPOT';
-      this.position.strike.value = 0;
+    if (id == 'POSITIONAL') {
+      this.strategy.type = 'POSITIONAL';
     } else {
-      this.position.strike.type = 'PREMIUM';
-      this.position.strike.value = 100;
+      this.strategy.type = 'INTRADAY';
     }
   }
 
   saveStrategy() {
-    // console.log(this.strategy, this.orderLegs);
-    if (!this.strategy.days || (this.strategy.days && this.strategy.days.length <= 0)) {
-      this.toast.error('Please Select days');
+    if (!this.strategy.orderStoploss || !this.strategy.margin || !this.strategy.maxpositions) {
+      this.toast.error('Please  fill required details');
       return;
     }
-    this.strategy.positions = this.orderLegs;
+    // this.strategy.positions = this.orderLegs;
     console.log(this.strategy);
-
-    this.backendService.postService(Trade.strategy, this.strategy).subscribe((res: any) => {
-      this.toast.success(`${this.strategy.name} Created Succesfully`);
-      console.log('Saved');
-    });
+    this.backendService.postService(Trade.strategy, this.strategy).subscribe(
+      (res: any) => {
+        this.toast.success(`${this.strategy.name} Created Succesfully`);
+        console.log('Saved', res.data);
+        const data = res.data;
+        if (data) this.strategyId = data._id;
+      },
+      err => {
+        this.toast.error(err.error.message);
+      }
+    );
   }
 
   updateStrategy() {
+    if (!this.strategy.orderStoploss || !this.strategy.margin || !this.strategy.maxpositions) {
+      this.toast.error('Please  fill required details');
+      return;
+    }
     // console.log(this.strategy, this.orderLegs);
-    this.strategy.positions = this.orderLegs;
+    // this.strategy.positions = this.orderLegs;
     this.backendService.putService(Trade.strategy, this.strategy).subscribe((res: any) => {
       this.toast.success(`${this.strategy.name} Updated Succesfully`);
       console.log('Updated');
     });
+  }
+
+  saveOrder(order: any) {
+    console.log(order);
+
+    order.strategyId = this.strategyId;
+    //////save order///
+    this.backendService.postService(Trade.order, order).subscribe(
+      (res: any) => {
+        if (res.succes) {
+          this.toast.success(`Order Created Succesfully`);
+          console.log('Saved', res.data);
+          const data = res.data;
+          order._id = data._id;
+          // this.orderLegs.push(order);
+        }
+      },
+      err => {
+        this.toast.error(err.error.message);
+      }
+    );
+  }
+
+  modifyOrder(order: any) {
+    //////modify order///
+  }
+
+  ngAfterViewInit() {
+    this.listenerFn = this.renderer.listen('window', 'click', (e: Event) => {
+      /**
+       * Only run when toggleButton is not clicked
+       * If we don't check this, all clicks (even on the toggle button) gets into this
+       * section which in the result we might never see the menu open!
+       * And the menu itself is checked here, and it's where we check just outside of
+       * the menu and button the condition abbove must close the menu
+       */
+      if (
+        this.toggleSearch &&
+        !this.toggleSearch.nativeElement.contains(e.target) &&
+        this.menuSearch &&
+        !this.menuSearch.nativeElement.contains(e.target)
+      ) {
+        this.isSearchOpen = false;
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.listenerFn) {
+      this.listenerFn();
+    }
   }
 }

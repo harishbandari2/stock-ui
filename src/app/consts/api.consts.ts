@@ -1,4 +1,4 @@
-export const BaseURL = `https://api.algotime.in`;
+export const BaseURL = `http://localhost:443`;
 
 // `http://ec2-43-204-238-31.ap-south-1.compute.amazonaws.com:3000`;
 //`http://localhost:443`;
@@ -40,7 +40,10 @@ export const Trade = {
   nodes: `/nodes`,
   start: '/trades/start',
   terminate: '/strategy/terminate',
-  portfolio: `/portfolio`
+  portfolio: `/portfolio`,
+  scrip: `/scrips/scrip`,
+  ltp: `/scrips/price`,
+  order: `/orders`
 };
 
 export const Flow = {

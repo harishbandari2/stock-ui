@@ -17,7 +17,8 @@ export class CommonApiService implements OnDestroy {
   }
 
   createSocketServer(userId: string) {
-    this.socket = new WebSocket('wss://api.algotime.in');
+    // this.socket = new WebSocket('wss://api.algotime.in');
+    this.socket = new WebSocket('ws://localhost:443');
 
     this.socket.onopen = () => {
       console.log('WebSocket connection established');

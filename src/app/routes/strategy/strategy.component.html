@@ -189,7 +189,7 @@
           </div>
         </ng-container>
 
-        <div class="table">
+        <div class="table" style="min-height: 320px;">
           <table class="table text-nowrap">
             <thead>
               <tr class="table-active">
@@ -270,7 +270,7 @@
                       >
                       <div class="text-muted font-size-sm">
                         <!-- <span class="bi bi-dot"></span> -->
-                        {{ algo.startTime }} - {{ algo.endTime }}
+                        {{ algo.type | titlecase }}
                       </div>
                     </div>
                   </div>
@@ -314,6 +314,20 @@
                   </ul>
                 </td>
               </tr>
+              <td *ngIf="algoList.length < 1" colspan="8">
+                <img
+                  class="mb-2"
+                  style="display: block; margin-left: auto; margin-right: auto;"
+                  src="data:image/png;base64,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"
+                />
+                <span
+                  style="display: flex; margin-left: auto; margin-right: auto;text-align: center; justify-content: center;"
+                  routerLink="/create"
+                  class="statusbg"
+                >
+                  <i class="icon-plus2 mr-2"></i> Create
+                </span>
+              </td>
             </tbody>
           </table>
         </div>

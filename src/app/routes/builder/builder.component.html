@@ -1,531 +1,3 @@
-<div class="content" style="display: none;">
-  <div class="card  no-shadow">
-    <div class="card-header " style="border-bottom-width:1px ;">
-      <h6 class="mb-0">{{ strategyId ? strategy.name : '' }} Positions</h6>
-    </div>
-
-    <form>
-      <div class="lesson-form-row">
-        <div class="row">
-          <div class="col-xl-2">
-            <div class="label-section">
-              <label> <span class="text-danger">*</span>Index</label>
-
-              <select class="form-control" [(ngModel)]="position.index" [ngModelOptions]="{ standalone: true }">
-                <option [ngValue]="'NIFTY'">NIFTY</option>
-                <option [ngValue]="'BANKNIFTY'">BANKNIFTY</option>
-                <option [ngValue]="'FINNIFTY'">FINNIFTY</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-xl-2">
-            <div class="label-section">
-              <label> <span class="text-danger">*</span>Strike</label>
-              <!-- <select class="form-control" [(ngModel)]="position.strike" [ngModelOptions]="{standalone: true}" (click)="changeStock(position.index)">
-                        <option *ngFor="let strike of strikes" [value]="strike.id">{{ strike.name }}</option>
-                      </select> -->
-              <div class="input-group">
-                <button class="btn btn-light" type="button">Point</button>
-                <select
-                  class="form-control"
-                  [(ngModel)]="position.strike.type"
-                  (change)="changeStrikeType($event.target.value)"
-                  [ngModelOptions]="{ standalone: true }"
-                >
-                  <option value="SPOT" selected="">Spot</option>
-                  <option value="PREMIUM">Premium</option>
-                </select>
-                <select
-                  *ngIf="position.strike.type == 'SPOT'"
-                  class="form-control"
-                  [(ngModel)]="position.strike.value"
-                  [ngModelOptions]="{ standalone: true }"
-                  (click)="changeStock(position.index)"
-                >
-                  <option *ngFor="let strike of strikes" [value]="strike.id">{{ strike.name }}</option>
-                </select>
-                <input
-                  *ngIf="position.strike.type != 'SPOT'"
-                  [(ngModel)]="position.strike.value"
-                  [ngModelOptions]="{ standalone: true }"
-                  class="form-control"
-                  type="text"
-                  placeholder="eg.100"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="col-xl-2">
-            <div class="label-section">
-              <label> <span class="text-danger">*</span>OrderType</label>
-              <select class="form-control" [(ngModel)]="position.orderSide" [ngModelOptions]="{ standalone: true }">
-                <option [ngValue]="'SELL'">SELL</option>
-                <option [ngValue]="'BUY'">BUY</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="col-xl-2">
-            <div class="label-section">
-              <label> <span class="text-danger">*</span>Total Lots</label>
-              <div class="input-group">
-                <button
-                  type="button"
-                  class="btn btn-light btn-icon"
-                  (click)="position.lot > 1 ? (position.lot = position.lot - 1) : null"
-                >
-                  <i class="bi bi-dash"></i>
-                </button>
-                <input
-                  class="form-control form-control-number text-center"
-                  type="number"
-                  name="number"
-                  [(ngModel)]="position.lot"
-                  min="1"
-                  max="5000"
-                  placeholder="0"
-                />
-                <button type="button" class="btn btn-light btn-icon" (click)="position.lot = position.lot + 1">
-                  <i class="bi bi-plus"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-xl-2">
-            <div class="label-section">
-              <label> <span class="text-danger">*</span>OrderType</label>
-              <select class="form-control" [(ngModel)]="position.orderType" [ngModelOptions]="{ standalone: true }">
-                <option [ngValue]="'CE'">CE</option>
-                <option [ngValue]="'PE'">PE</option>
-              </select>
-            </div>
-          </div>
-          <div class="col-xl-2">
-            <div class="label-section">
-              <label class="text-muted"> Add Leg</label>
-              <div class="input-group">
-                <button type="button" class="btn bg-primary-800" (click)="addPosition(position)">
-                  Add Position
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- <mat-icon class="delete-btn" (click)="deleteLesson(i)">
-                      delete_forever</mat-icon> -->
-      </div>
-    </form>
-  </div>
-
-  <div class="card border border-success no-shadow">
-    <div class="table-responsive">
-      <table class="table text-nowrap">
-        <thead>
-          <tr class="table-active">
-            <th style="width: 10%;">LOTS</th>
-            <th>INDEX</th>
-            <th>SIDE</th>
-            <th style="width: 10%;">STRIKE</th>
-            <th>TYPE</th>
-            <th>Target</th>
-            <th>STOPLOSS</th>
-            <th>TRAIL SL</th>
-            <th>
-              RE entry/excute
-              <label class="d-inline-flex align-items-center ml-1" style="position: relative; top:4px">
-                <input
-                  type="checkbox"
-                  [(ngModel)]="strategy.reasapALL"
-                  (change)="changeReasapALL(strategy.reasapALL)"
-                  [ngModelOptions]="{ standalone: true }"
-                />
-                <span class="ml-1">ReasapALL</span>
-              </label>
-            </th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let order of orderLegs; let i = index">
-            <td>
-              <div class="input-group">
-                <input
-                  class="form-control form-control-number text-center"
-                  [(ngModel)]="order.lot"
-                  type="number"
-                  name="number"
-                  value="5"
-                />
-                <button type="button" class="btn btn-light btn-icon" onclick="">
-                  1lot = {{ order.index == 'BANKNIFTY' ? 25 : order.index == 'NIFTY' ? 50 : 40 }}Q
-                </button>
-              </div>
-            </td>
-            <td>
-              <select class="form-control" [(ngModel)]="order.index" [ngModelOptions]="{ standalone: true }">
-                <option [ngValue]="'NIFTY'">NIFTY</option>
-                <option [ngValue]="'BANKNIFTY'">BANKNIFTY</option>
-                <option [ngValue]="'FINNIFTY'">FINNIFTY</option>
-              </select>
-            </td>
-            <td>
-              <select class="form-control" [(ngModel)]="order.orderSide" [ngModelOptions]="{ standalone: true }">
-                <option [ngValue]="'SELL'">SELL</option>
-                <option [ngValue]="'BUY'">BUY</option>
-              </select>
-            </td>
-            <td>
-              <select
-                *ngIf="order.strike.type == 'SPOT'"
-                class="form-control"
-                type="number"
-                [(ngModel)]="order.strike.value"
-                [ngModelOptions]="{ standalone: true }"
-              >
-                <option *ngFor="let strike of strikes" [value]="strike.id">{{ strike.name }}</option>
-              </select>
-              <div class="input-group" *ngIf="order.strike.type != 'SPOT'">
-                <button class="btn btn-light" type="button">CP~</button>
-                <input
-                  [(ngModel)]="order.strike.value"
-                  [ngModelOptions]="{ standalone: true }"
-                  class="form-control"
-                  type="text"
-                  placeholder="eg.100"
-                />
-              </div>
-            </td>
-            <td>
-              <select class="form-control" [(ngModel)]="order.orderType" [ngModelOptions]="{ standalone: true }">
-                <option [ngValue]="'CE'">CE</option>
-                <option [ngValue]="'PE'">PE</option>
-              </select>
-            </td>
-            <td>
-              <span class="pointer" *ngIf="!order.target.type" (click)="updateTarget(i)"
-                ><i class="bi bi-plus-circle"></i> Target</span
-              >
-              <div class="input-group" *ngIf="order.target.type">
-                <span class="input-group-text">Tg</span>
-                <select class="form-control" [(ngModel)]="order.target.type" [ngModelOptions]="{ standalone: true }">
-                  <option value="2">Points</option>
-                  <option value="percent">%</option>
-                </select>
-                <input
-                  type="number"
-                  class="form-control"
-                  [(ngModel)]="order.target.value"
-                  placeholder="1"
-                  style="width: 14px;"
-                />
-                <i class="bi bi-x-lg ml-2 pointer" style="display: inherit; align-items:center"></i>
-              </div>
-            </td>
-            <td>
-              <span class="pointer" *ngIf="!order.stoploss.type" (click)="updateStoploss(i)"
-                ><i class="bi bi-plus-circle"></i> Stoploss</span
-              >
-              <div class="input-group" *ngIf="order.stoploss.type">
-                <span class="input-group-text">Sl</span>
-                <select class="form-control" [(ngModel)]="order.stoploss.type" [ngModelOptions]="{ standalone: true }">
-                  <option value="2">Points</option>
-                  <option value="percent">%</option>
-                </select>
-                <input
-                  type="number"
-                  class="form-control"
-                  [(ngModel)]="order.stoploss.value"
-                  placeholder="1"
-                  style="width: 14px;"
-                />
-                <i class="bi bi-x-lg ml-2 pointer" style="display: inherit; align-items:center"></i>
-              </div>
-            </td>
-            <td>
-              <span class="pointer" *ngIf="!order.tsl.type" (click)="updateTrailStoploss(i)"
-                ><i class="bi bi-plus-circle"></i> Trail SL</span
-              >
-              <div class="input-group" *ngIf="order.tsl.type">
-                <span class="input-group-text">Tsl</span>
-                <select class="form-control" [(ngModel)]="order.tsl.type" [ngModelOptions]="{ standalone: true }">
-                  <option value="points">Point</option>
-                  <option value="percent">%</option>
-                </select>
-                <input
-                  [(ngModel)]="order.tsl.valuex"
-                  type="number"
-                  class="form-control"
-                  placeholder="1"
-                  style="width: 18px;"
-                />
-                <input
-                  [(ngModel)]="order.tsl.valuey"
-                  type="number"
-                  class="form-control"
-                  placeholder="1"
-                  style="width: 18px;"
-                />
-                <i class="bi bi-x-lg ml-2 pointer" style="display: inherit; align-items:center"></i>
-              </div>
-            </td>
-            <td>
-              <span class="pointer" *ngIf="!order.reentry.type" (click)="updateReentry(i)"
-                ><i class="bi bi-plus-circle"></i> Re Entry/Excute</span
-              >
-              <div class="input-group" *ngIf="order.reentry.type">
-                <span class="input-group-text">Re</span>
-                <select class="form-control" [(ngModel)]="order.reentry.type" [ngModelOptions]="{ standalone: true }">
-                  <ng-container *ngIf="!strategy.reasapALL">
-                    <option value="RECOST">RECOST</option>
-                    <option value="REASAP">REASAP</option>
-                  </ng-container>
-                  <option value="REASAPALL" *ngIf="strategy.reasapALL">REASAPALL</option>
-                </select>
-                <input
-                  *ngIf="order.reentry.type != 'REASAPALL'"
-                  type="number"
-                  class="form-control"
-                  [(ngModel)]="order.reentry.value"
-                  placeholder="1"
-                  style="width: 14px;"
-                />
-                <ng-container *ngIf="order.reentry.type == 'REASAPALL'">
-                  <input
-                    type="number"
-                    class="form-control"
-                    [(ngModel)]="strategy.reasapALLConfig.repeatCount"
-                    placeholder="1"
-                    style="width: 14px;"
-                  />
-                  <input
-                    type="number"
-                    class="form-control"
-                    [(ngModel)]="strategy.reasapALLConfig.qmultiplier"
-                    placeholder="qmultiplier"
-                    style="width: 14px;"
-                  />
-                  <input
-                    type="number"
-                    class="form-control"
-                    [(ngModel)]="strategy.reasapALLConfig.exitLastnthLegs"
-                    placeholder="exitLastnthLegs"
-                    style="width: 14px;"
-                  />
-                </ng-container>
-                <i class="bi bi-x-lg ml-2 pointer" style="display: inherit; align-items:center"></i>
-              </div>
-            </td>
-            <td><i class="bi bi-trash-fill pointer" style="font-size: 16px;" (click)="deleteOrder(i)"></i></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="card no-shadow">
-    <div class="card-header" style="border-bottom-width:1px ;">
-      <h6 class="mb-0">Conditions</h6>
-    </div>
-
-    <div class="lesson-form-row">
-      <div class="row mb-3">
-        <div class="col-xl-2">
-          <div class="label-section">
-            <label> <span class="text-danger">*</span>Start Time</label>
-
-            <input
-              [(ngModel)]="strategy.startTime"
-              [ngModelOptions]="{ standalone: true }"
-              class="form-control"
-              type="number"
-              placeholder="eg.925"
-            />
-          </div>
-        </div>
-        <div class="col-xl-2">
-          <div class="label-section">
-            <label> <span class="text-danger">*</span>End Time</label>
-
-            <input
-              [(ngModel)]="strategy.endTime"
-              [ngModelOptions]="{ standalone: true }"
-              class="form-control"
-              type="number"
-              placeholder="eg.1524"
-              required
-            />
-          </div>
-        </div>
-        <div class="col-xl-2">
-          <div class="label-section">
-            <label>Overall Stoploss</label>
-
-            <input
-              [(ngModel)]="strategy.overallStoploss"
-              [ngModelOptions]="{ standalone: true }"
-              class="form-control"
-              type="number"
-              placeholder="eg.2500"
-            />
-          </div>
-        </div>
-        <div class="col-xl-2">
-          <div class="label-section">
-            <label>Overall Target</label>
-
-            <input
-              [(ngModel)]="strategy.overallTarget"
-              [ngModelOptions]="{ standalone: true }"
-              class="form-control"
-              type="number"
-              placeholder="eg.5000"
-            />
-          </div>
-        </div>
-
-        <div class="col-xl-2">
-          <div class="label-section">
-            <label> <span class="text-danger">*</span>Multiplier</label>
-            <div class="input-group">
-              <button
-                type="button"
-                class="btn btn-light btn-icon"
-                (click)="strategy.multiplier > 1 ? (strategy.multiplier = strategy.multiplier - 1) : null"
-              >
-                <i class="bi bi-dash"></i>
-              </button>
-              <input
-                [(ngModel)]="strategy.multiplier"
-                [ngModelOptions]="{ standalone: true }"
-                class="form-control form-control-number text-center"
-                type="number"
-                name="number"
-                [(ngModel)]="strategy.multiplier"
-                min="1"
-                max="5000"
-                placeholder="0"
-              />
-              <button
-                type="button"
-                class="btn btn-light btn-icon"
-                (click)="strategy.multiplier = strategy.multiplier + 1"
-              >
-                <i class="bi bi-plus"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-2">
-          <div class="label-section">
-            <label> <span class="text-danger">*</span>Approximate Margin</label>
-
-            <input
-              class="form-control"
-              [(ngModel)]="strategy.margin"
-              [ngModelOptions]="{ standalone: true }"
-              type="number"
-              placeholder="eg.175000"
-            />
-          </div>
-        </div>
-        <div class="col-xl-2">
-          <!-- <div class="label-section">
-                    <label class="text-muted"> Add Leg</label>
-                    <div class="input-group"><button type="button" class="btn bg-primary-800" (click)="addPosition(position)">
-                        Add Position
-                      </button>
-                      </div>
-                  </div>                   -->
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xl-4">
-          <div class="label-section">
-            <label> <span class="text-danger">*</span>Select Days</label>
-            <ng-multiselect-dropdown
-              [placeholder]="'Select Days'"
-              [settings]="dropdownSettings"
-              [data]="days"
-              [(ngModel)]="strategy.days"
-            >
-            </ng-multiselect-dropdown>
-          </div>
-        </div>
-        <div class="col-xl-2">
-          <label class="d-inline-flex align-items-center" style="position: relative; top:36px">
-            <input type="checkbox" [(ngModel)]="strategy.sltoCost" [ngModelOptions]="{ standalone: true }" />
-            <span class="ml-2">Move Sl to Cost</span>
-          </label>
-        </div>
-
-        <div class="col-xl-2">
-          <label class="d-inline-flex align-items-center" style="position: relative; top:36px">
-            <input type="checkbox" [(ngModel)]="strategy.squareOffallLegs" [ngModelOptions]="{ standalone: true }" />
-            <span class="ml-2">Square Of All Legs</span>
-          </label>
-        </div>
-
-        <div class="col-xl-2">
-          <div class="label-section">
-            <label> <span class="text-danger">*</span>Select Broker</label>
-            <ng-multiselect-dropdown
-              [placeholder]="'Select Connection'"
-              [settings]="brokerSettings"
-              [data]="connections"
-              [(ngModel)]="strategy.brokers"
-            >
-            </ng-multiselect-dropdown>
-          </div>
-        </div>
-        <div class="col-xl-2">
-          <!-- <div class="label-section">
-                      <label class="text-muted"> Add Leg</label>
-                      <div class="input-group"><button type="button" class="btn bg-primary-800" (click)="addPosition(position)">
-                          Add Position
-                        </button>
-                        </div>
-                    </div>                   -->
-        </div>
-      </div>
-
-      <!-- <mat-icon class="delete-btn" (click)="deleteLesson(i)">
-                  delete_forever</mat-icon> -->
-    </div>
-
-    <div class="card-footer d-sm-flex justify-content-sm-between align-items-sm-center py-sm-2">
-      <input
-        type="text"
-        class="form-control"
-        [(ngModel)]="strategy.name"
-        style="max-width:200px"
-        placeholder="Strategy Name"
-      />
-      <button
-        [disabled]="
-          !strategy.startTime || !strategy.endTime || !strategy.margin || !strategy.name || orderLegs.length <= 0
-        "
-        type="button"
-        class="btn btn-success mt-3 mt-sm-0 w-100 w-sm-auto"
-        (click)="saveStrategy()"
-        *ngIf="!strategyId"
-      >
-        Save Strategy
-      </button>
-      <button
-        type="button"
-        class="btn btn-success mt-3 mt-sm-0 w-100 w-sm-auto"
-        (click)="updateStrategy()"
-        *ngIf="strategyId"
-      >
-        Update Strategy
-      </button>
-    </div>
-  </div>
-</div>
 <div class="content form_page_wrapper">
   <div class="box rounded mt-2">
     <div class="d-flex justify-content-center mt-2 tab_responsive">
@@ -533,10 +5,10 @@
         <input
           class="mr-1 checkbox"
           type="checkbox"
-          [ngModel]="position.strike.type == 'SPOT'"
-          (click)="changeStrikeType('SPOT')"
+          [ngModel]="strategy.type == 'POSITIONAL'"
+          (click)="changeType('POSITIONAL')"
         />
-        <p class="mb-0 text-nowrap">ATM Point</p>
+        <p class="mb-0 text-nowrap">Positional (NRML)</p>
       </div>
       <!-- <div class="d-flex flex-row justify-content-center align-items-center m-2">
         <input class="mr-1 checkbox" type="checkbox" />
@@ -546,10 +18,10 @@
         <input
           class="mr-1 checkbox"
           type="checkbox"
-          [ngModel]="position.strike.type == 'PREMIUM'"
-          (click)="changeStrikeType('PREMIUM')"
+          [ngModel]="strategy.type == 'INTRADAY'"
+          (click)="changeType('INTRADAY')"
         />
-        <p class="mb-0 text-nowrap">Closest Premium (CP)</p>
+        <p class="mb-0 text-nowrap">Intraday (MIS)</p>
         <img class="info" src="../../../../../assets/images/info.png" alt="" />
       </div>
       <!-- <div class="d-flex flex-row justify-content-center align-items-center m-2">
@@ -560,11 +32,12 @@
     </div>
     <div class="form_box">
       <div class="form_input">
-        <label for="">Select Index:</label>
+        <label for="">Select Excahange:</label>
         <div class="custom_btn">
-          <select name="" id="" [(ngModel)]="position.index" [ngModelOptions]="{ standalone: true }">
-            <option *ngFor="let instrument of index" [ngValue]="instrument">{{ instrument }}</option>
-          </select>
+          <button [class]="position.exchange == 'NSE' ? 'active' : ''" (click)="position.exchange = 'NSE'">NSE</button>
+          <button [class]="position.exchange == 'BSE' ? 'active' : 'border_lft'" (click)="position.exchange = 'BSE'">
+            BSE
+          </button>
           <!--         
           <button [class]="position.index == 'NIFTY' ? 'active' : ''" (click)="position.index = 'NIFTY'" style="width: 33%;">Nifty</button>
           <button [class]="position.index == 'BANKNIFTY' ? 'active' : 'border_lft'" (click)="position.index = 'BANKNIFTY'" style="width: 33%;">
@@ -584,14 +57,7 @@
         </div>
       </div> -->
       <div class="form_input">
-        <label for="">Option Type:</label>
-        <div class="custom_btn">
-          <button [class]="position.orderType == 'CE' ? 'active' : ''" (click)="position.orderType = 'CE'">Call</button>
-          <button [class]="position.orderType == 'PE' ? 'active' : ''" (click)="position.orderType = 'PE'">Put</button>
-        </div>
-      </div>
-      <div class="form_input">
-        <label for="">Action Type:</label>
+        <label for="">Order Side:</label>
         <div class="custom_btn">
           <button [class]="position.orderSide == 'BUY' ? 'active' : ''" (click)="position.orderSide = 'BUY'">
             Buy
@@ -602,37 +68,83 @@
         </div>
       </div>
       <div class="form_input">
-        <label for="">Strike Price:</label>
-        <select
-          *ngIf="position.strike.type == 'SPOT'"
-          name=""
-          id=""
-          [(ngModel)]="position.strike.value"
-          [ngModelOptions]="{ standalone: true }"
-        >
-          <option *ngFor="let strike of strikes" [ngValue]="strike.id">{{ strike.name }}</option>
-        </select>
-        <input
-          class="custom_add_remove"
-          *ngIf="position.strike.type == 'PREMIUM'"
-          [(ngModel)]="position.strike.value"
-          [ngModelOptions]="{ standalone: true }"
-        />
+        <label for="">Order Type:</label>
+        <div class="custom_btn">
+          <button [class]="position.orderType == 'MARKET' ? 'active' : ''" (click)="position.orderType = 'MARKET'">
+            Market
+          </button>
+          <button [class]="position.orderType == 'LIMIT' ? 'active' : ''" (click)="position.orderType = 'LIMIT'">
+            Limit
+          </button>
+        </div>
       </div>
       <div class="form_input">
-        <label for="">Total Lot</label>
+        <label for="">Stock Symbol:</label>
+        <div
+          class="custom_btn"
+          class="focusSearch"
+          role="combobox"
+          aria-haspopup="listbox"
+          aria-owns="react-autowhatever-1"
+          aria-expanded="false"
+          style="position: relative; box-sizing: border-box; padding: 6px; background-color: rgb(255, 255, 255); border: 1px solid rgb(221, 224, 228); border-radius: 4px; margin: 0px; text-align: left;"
+        >
+          <div>
+            <input
+              class="input-focus searchInput"
+              [readOnly]="isSearchDisable"
+              id="create_stock_search"
+              type="text"
+              autocomplete="off"
+              aria-autocomplete="list"
+              aria-controls="react-autowhatever-1"
+              placeholder="Search by name or ticker"
+              value=""
+              style="border: none; outline: none; margin-left: 8px; color: rgb(83, 91, 98); font-size: 13px; background-color: rgb(255, 255, 255); vertical-align: top; width: calc(100% - 32px);"
+              aria-activedescendant="react-autowhatever-1--item-0"
+              placeholder="Search stock"
+              [(ngModel)]="position.symbol"
+              #toggleSearch
+              (click)="clickSearch()"
+              (ngModelChange)="changeSearch($event)"
+            />
+            <i class="icon-search4 text-16 text-muted" *ngIf="!isSearchDisable"></i>
+            <i
+              class="bi bi-x-lg text-16 text-muted pointer"
+              *ngIf="isSearchDisable"
+              (click)="isSearchDisable = false; clickSearch()"
+            ></i>
+          </div>
+          <div class="search-dropdown" #menuSearch *ngIf="isSearchOpen">
+            <ul role="listbox" style="margin: 8px; padding: 0px; list-style-type: none;">
+              <li
+                class="option"
+                *ngFor="let stock of stocks"
+                style="margin: 4px 0px; border-radius: 4px; cursor: pointer;"
+              >
+                <div class="item" (click)="stockSelected(stock)" style="padding: 6px;">
+                  <h5 style="margin: 0; font-size: 15px; font-weight: 500;">{{ stock.ticker }}</h5>
+                  <h6 style="margin: 0; font-size: 12px;" title="Reliance Industries Ltd">{{ stock.name }}</h6>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="form_input">
+        <label for="">Max Quantity</label>
         <div class="custom_add_remove">
           <button>-</button>
-          <input type="number" [(ngModel)]="position.lot" value="1" />
+          <input type="number" [(ngModel)]="position.quantity" value="1" />
           <button>+</button>
         </div>
       </div>
       <div class="form_input submit_btn">
-        <button (click)="addPosition(position)">Add Position</button>
+        <button [disabled]="!position.symbol" (click)="addPosition(position)">Add Position</button>
       </div>
     </div>
   </div>
-  <ng-container *ngIf="orderLegs.length > 0">
+  <ng-container *ngIf="orderLegs && orderLegs.length > 0">
     <div class="checkbox_wrap">
       <div class="checkbox_sepration">
         <!-- <div class="checkbox_box">
@@ -677,8 +189,8 @@
         <div class="list_box">
           <div class="lft">
             <div class="list_input_group">
-              <input type="number" [(ngModel)]="order.lot" />
-              <button>Lot</button>
+              <input type="number" [(ngModel)]="order.quantity" disabled="true" />
+              <button>Qty.</button>
             </div>
             <div
               [class]="
@@ -692,28 +204,24 @@
               </button>
             </div>
             <div class="list_input_group">
-              <select
-                *ngIf="order.strike.type == 'SPOT'"
-                name=""
-                id=""
-                [(ngModel)]="order.strike.value"
-                [ngModelOptions]="{ standalone: true }"
-              >
+              <!-- <select *ngIf="order.strike.type == 'SPOT'" name="" id="" [(ngModel)]="order.strike.value"
+                [ngModelOptions]="{ standalone: true }">
                 <option *ngFor="let strike of strikes" [ngValue]="strike.id">{{ strike.name }}</option>
-              </select>
-              <ng-container *ngIf="order.strike.type != 'SPOT'">
-                <button>CP~</button>
+              </select> -->
+              <ng-container>
+                <button *ngIf="order.orderType == 'MARKET'">CP~</button>
+                <button *ngIf="order.orderType == 'LIMIT'">Limit</button>
                 <input
-                  [(ngModel)]="order.strike.value"
+                  [(ngModel)]="order.price"
                   [ngModelOptions]="{ standalone: true }"
                   type="number"
-                  placeholder="eg.100"
+                  placeholder="eg.150"
                 />
               </ng-container>
             </div>
             <div class="list_input_group no_background">
-              <button (click)="order.orderType == 'CE' ? (order.orderType = 'PE') : (order.orderType = 'CE')">
-                {{ order.orderType }}
+              <button>
+                {{ order.symbol }}
               </button>
             </div>
           </div>
@@ -824,85 +332,62 @@
                 </button>
               </ng-container>
             </div>
-            <div class="list_input_group">
-              <span
-                class="pointer"
-                *ngIf="!order.reentry.type"
-                style="position: relative; top: 10px;"
-                (click)="updateReentry(i)"
-                ><i class="bi bi-plus-circle"></i> Re-Entry/Exec</span
-              >
+            <!-- <div class="list_input_group">
+              <span class="pointer" *ngIf="!order.reentry.type" style="position: relative; top: 10px;"
+                (click)="updateReentry(i)"><i class="bi bi-plus-circle"></i> Re-Entry/Exec</span>
               <ng-container *ngIf="order.reentry.type">
                 <div class="input_box">
                   <div class="dropdown" ngbDropdown>
-                    <button
-                      class="btn_dropdown dropdown-toggle"
-                      type="button"
-                      id="tp"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      ngbDropdownToggle
-                    >
+                    <button class="btn_dropdown dropdown-toggle" type="button" id="tp" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
                       {{ order.reentry.type }}
                     </button>
-                    <div
-                      class="dropdown-menu"
-                      aria-labelledby="tp"
-                      ngbDropdownMenu
-                      *ngIf="order.reentry.type != 'REASAPALL'"
-                    >
+                    <div class="dropdown-menu" aria-labelledby="tp" ngbDropdownMenu
+                      *ngIf="order.reentry.type != 'REASAPALL'">
                       <a class="dropdown-item" (click)="addReEntry('RECOST', i)">Re-Cost</a>
                       <a class="dropdown-item" (click)="addReEntry('REASAP', i)">Re-Asap</a>
                       <a class="dropdown-item" (click)="addReEntry('RECOSTREV', i)">Re-Cost &#8617;</a>
                       <a class="dropdown-item" (click)="addReEntry('REASAPREV', i)">Re-Asap &#8617;</a>
 
-                      <!-- <a class="dropdown-item" href="#">Something else here</a> -->
                     </div>
                   </div>
-                  <input
-                    type="number"
-                    [(ngModel)]="order.reentry.value"
-                    *ngIf="order.reentry.type != 'REASAPALL'"
-                    placeholder="eg.1"
-                  />
+                  <input type="number" [(ngModel)]="order.reentry.value" *ngIf="order.reentry.type != 'REASAPALL'"
+                    placeholder="eg.1" />
                   <ng-container *ngIf="order.reentry.type == 'REASAPALL'">
                     <input type="number" [(ngModel)]="strategy.reasapALLConfig.repeatCount" placeholder="1" />
-                    <input
-                      type="number"
-                      class="border_lft"
-                      [(ngModel)]="strategy.reasapALLConfig.qmultiplier"
-                      placeholder="qmultiplier"
-                    />
-                    <input
-                      type="number"
-                      class="border_lft"
-                      [(ngModel)]="strategy.reasapALLConfig.exitLastnthLegs"
-                      placeholder="exitnthLegs"
-                    />
+                    <input type="number" class="border_lft" [(ngModel)]="strategy.reasapALLConfig.qmultiplier"
+                      placeholder="qmultiplier" />
+                    <input type="number" class="border_lft" [(ngModel)]="strategy.reasapALLConfig.exitLastnthLegs"
+                      placeholder="exitnthLegs" />
                   </ng-container>
                 </div>
                 <button class="cross_btn" (click)="removeRE(i)" *ngIf="order.reentry.type != 'REASAPALL'">
                   <img src="../../../../../assets/images/cross.png" alt="" />
                 </button>
               </ng-container>
-            </div>
+            </div> -->
             <div class="list_input_group">
               <div class="custom_btn">
-                <button [class]="order.index == 'NIFTY' ? 'active' : ''" (click)="order.index = 'NIFTY'">N</button>
-                <button [class]="order.index == 'FINNIFTY' ? 'active' : ''" (click)="order.index = 'FINNIFTY'">
-                  FN
-                </button>
-                <button [class]="order.index == 'BANKNIFTY' ? 'active' : ''" (click)="order.index = 'BANKNIFTY'">
-                  BN
+                <button [class]="order.exchange == 'NSE' ? 'active' : ''" (click)="order.exchange = 'NSE'">NSE</button>
+                <button [class]="order.exchange == 'BSE' ? 'active' : ''" (click)="order.exchange = 'BSE'">
+                  BSE
                 </button>
               </div>
+            </div>
+            <div class="list_input_group">
+              <button
+                [disabled]="order._id"
+                (click)="saveOrder(order)"
+                style="background: #1fb141; border: 2px solid #1fb141; color: #fff;"
+              >
+                <i class="bi bi-play mr-1"> </i>Excute
+              </button>
             </div>
           </div>
         </div>
         <div class="rgt_btn">
           <button>
-            <img src="../../../../../assets/images/copy.png" alt="" (click)="copyLeg(order)" />
+            <img src="../../../../../assets/images/copy.png" alt="" />
           </button>
           <button (click)="deleteOrder(i)">
             <img src="../../../../../assets/images/delete.png" alt="" />
@@ -911,7 +396,7 @@
       </div>
     </div>
 
-    <div class="time_wrap">
+    <!-- <div class="time_wrap">
       <div class="time_box">
         <div class="label">
           <p>Entry Time</p>
@@ -936,155 +421,218 @@
           <input type="number" [(ngModel)]="strategy.endTime" placeholder="eg. 1525" />
         </div>
       </div>
-    </div>
-    <div class="time_wrap strategy_box">
-      <!-- <button class="time_box" *ngIf="!strategy.overallStoploss" (click)="strategy.overallStoploss=1000">
-        <div class="button_box" >
-          <img src="../../../../../assets/images/plus.png" alt="" />
-          <p>Strategy Stoploss</p>
-        </div>
-      </button> -->
-      <div class="time_box">
-        <div class="label">
-          <p>Strategy Stoploss</p>
-        </div>
-        <div class="time_input_wrap">
-          <!-- <select name="" id="">
-            <option value="MTM">MTM</option>
-          </select>
-          <span>:</span> -->
-          <input type="number" [(ngModel)]="strategy.overallStoploss" placeholder="eg. 1500" />
-        </div>
-      </div>
-
-      <!-- <button class="time_box" *ngIf="!strategy.overallTarget" (click)="strategy.overallTarget=1000">
-        <div class="button_box">
-          <img src="../../../../../assets/images/plus.png" alt="" />
-          <p>Strategy Target Profit</p>
-        </div>
-      </button> -->
-      <div class="time_box">
-        <div class="label">
-          <p>Strategy Target</p>
-        </div>
-        <div class="time_input_wrap">
-          <!-- <select name="" id="">
-            <option value="MTM">MTM</option>
-          </select>
-          <span>:</span> -->
-          <input type="number" [(ngModel)]="strategy.overallTarget" placeholder="eg.1500" />
-        </div>
-      </div>
-    </div>
-
-    <div class="time_wrap strategy_box">
-      <!-- <button class="time_box" *ngIf="!strategy.overallStoploss" (click)="strategy.overallStoploss=1000">
-        <div class="button_box" >
-          <img src="../../../../../assets/images/plus.png" alt="" />
-          <p>Strategy Stoploss</p>
-        </div>
-      </button> -->
-      <div class="time_box">
-        <div class="label">
-          <p>Approximate Margin</p>
-        </div>
-        <div class="time_input_wrap">
-          <!-- <select name="" id="">
-            <option value="MTM">MTM</option>
-          </select>
-          <span>:</span> -->
-          <input type="number" [(ngModel)]="strategy.margin" placeholder="eg.150000" />
-        </div>
-
-        <div class="label ml-2">
-          <p>Multiplier</p>
-        </div>
-        <div class="time_input_wrap">
-          <!-- <select name="" id="">
-            <option value="MTM">MTM</option>
-          </select>
-          <span>:</span> -->
-          <input type="number" [(ngModel)]="strategy.multiplier" placeholder="eg. 2" />
-        </div>
-      </div>
-
-      <!-- <button class="time_box" *ngIf="!strategy.overallTarget" (click)="strategy.overallTarget=1000">
-        <div class="button_box">
-          <img src="../../../../../assets/images/plus.png" alt="" />
-          <p>Strategy Target Profit</p>
-        </div>
-      </button> -->
-      <div class="time_box">
-        <div class="label">
-          <p>Days</p>
-        </div>
-        <div class="time_input_wrap">
-          <!-- <select name="" id="">
-            <option value="MTM">MTM</option>
-          </select>
-          <span>:</span> -->
-          <ng-multiselect-dropdown
-            [placeholder]="'Select Days'"
-            [settings]="dropdownSettings"
-            [data]="days"
-            [(ngModel)]="strategy.days"
-          >
-          </ng-multiselect-dropdown>
-        </div>
-
-        <div class="label ml-2">
-          <p>Brokers</p>
-        </div>
-        <div class="time_input_wrap">
-          <!-- <select name="" id="">
-            <option value="MTM">MTM</option>
-          </select>
-          <span>:</span> -->
-          <ng-multiselect-dropdown
-            [placeholder]="'Select Connection'"
-            [settings]="brokerSettings"
-            [data]="connections"
-            [(ngModel)]="strategy.brokers"
-          >
-          </ng-multiselect-dropdown>
-        </div>
-      </div>
-    </div>
-
-    <div class="name_wrap">
-      <div class="input_box">
-        <label for="">Name</label>
-        <input
-          type="text"
-          [(ngModel)]="strategy.name"
-          [ngModelOptions]="{ standalone: true }"
-          placeholder="Enter Name"
-        />
-      </div>
-      <div>
-        <button
-          [disabled]="
-            !strategy.startTime || !strategy.endTime || !strategy.margin || !strategy.name || orderLegs.length <= 0
-          "
-          type="button"
-          class="btn btn-success mt-3 mt-sm-0 w-100 w-sm-auto"
-          (click)="saveStrategy()"
-          *ngIf="!strategyId"
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          [disabled]="
-            !strategy.startTime || !strategy.endTime || !strategy.margin || !strategy.name || orderLegs.length <= 0
-          "
-          class="btn btn-success mt-3 mt-sm-0 w-100 w-sm-auto"
-          (click)="updateStrategy()"
-          *ngIf="strategyId"
-        >
-          Update
-        </button>
-      </div>
-    </div>
+    </div> -->
   </ng-container>
+  <div class="time_wrap strategy_box">
+    <!-- <button class="time_box" *ngIf="!strategy.overallStoploss" (click)="strategy.overallStoploss=1000">
+      <div class="button_box" >
+        <img src="../../../../../assets/images/plus.png" alt="" />
+        <p>Strategy Stoploss</p>
+      </div>
+    </button> -->
+    <div class="time_box">
+      <div class="label">
+        <p>Order Stoploss(%)</p>
+      </div>
+      <div class="time_input_wrap">
+        <!-- <select name="" id="">
+          <option value="MTM">MTM</option>
+        </select>
+        <span>:</span> -->
+        <input type="number" [(ngModel)]="strategy.orderStoploss" placeholder="eg. 5" />
+      </div>
+    </div>
+
+    <!-- <button class="time_box" *ngIf="!strategy.overallTarget" (click)="strategy.overallTarget=1000">
+      <div class="button_box">
+        <img src="../../../../../assets/images/plus.png" alt="" />
+        <p>Strategy Target Profit</p>
+      </div>
+    </button> -->
+    <div class="time_box">
+      <div class="label">
+        <p>Order Target(%)</p>
+      </div>
+      <div class="time_input_wrap">
+        <!-- <select name="" id="">
+          <option value="MTM">MTM</option>
+        </select>
+        <span>:</span> -->
+        <input type="number" [(ngModel)]="strategy.orderTarget" placeholder="eg.15" />
+      </div>
+    </div>
+  </div>
+
+  <div class="time_wrap strategy_box">
+    <!-- <button class="time_box" *ngIf="!strategy.overallStoploss" (click)="strategy.overallStoploss=1000">
+      <div class="button_box" >
+        <img src="../../../../../assets/images/plus.png" alt="" />
+        <p>Strategy Stoploss</p>
+      </div>
+    </button> -->
+    <div class="time_box">
+      <div class="label">
+        <p>Strategy Stoploss</p>
+      </div>
+      <div class="time_input_wrap">
+        <!-- <select name="" id="">
+          <option value="MTM">MTM</option>
+        </select>
+        <span>:</span> -->
+        <input type="number" [(ngModel)]="strategy.overallStoploss" placeholder="eg. 1500" />
+      </div>
+    </div>
+
+    <!-- <button class="time_box" *ngIf="!strategy.overallTarget" (click)="strategy.overallTarget=1000">
+      <div class="button_box">
+        <img src="../../../../../assets/images/plus.png" alt="" />
+        <p>Strategy Target Profit</p>
+      </div>
+    </button> -->
+    <div class="time_box">
+      <div class="label">
+        <p>Strategy Target</p>
+      </div>
+      <div class="time_input_wrap">
+        <!-- <select name="" id="">
+          <option value="MTM">MTM</option>
+        </select>
+        <span>:</span> -->
+        <input type="number" [(ngModel)]="strategy.overallTarget" placeholder="eg.1500" />
+      </div>
+    </div>
+  </div>
+
+  <div class="time_wrap strategy_box">
+    <!-- <button class="time_box" *ngIf="!strategy.overallStoploss" (click)="strategy.overallStoploss=1000">
+      <div class="button_box" >
+        <img src="../../../../../assets/images/plus.png" alt="" />
+        <p>Strategy Stoploss</p>
+      </div>
+    </button> -->
+    <div class="time_box">
+      <div class="label">
+        <p>Minimum Margin &nbsp;</p>
+      </div>
+      <div class="time_input_wrap">
+        <!-- <select name="" id="">
+          <option value="MTM">MTM</option>
+        </select>
+        <span>:</span> -->
+        <input type="number" min="1000" [(ngModel)]="strategy.margin" placeholder="eg.150000" />
+      </div>
+      <!-- 
+      <div class="label ml-2">
+        <p>Multiplier</p>
+      </div>
+      <div class="time_input_wrap">
+        
+        <input type="number" [(ngModel)]="strategy.multiplier" placeholder="eg. 2" />
+      </div> -->
+    </div>
+
+    <!-- <button class="time_box" *ngIf="!strategy.overallTarget" (click)="strategy.overallTarget=1000">
+      <div class="button_box">
+        <img src="../../../../../assets/images/plus.png" alt="" />
+        <p>Strategy Target Profit</p>
+      </div>
+    </button> -->
+    <div class="time_box">
+      <!-- <div class="label">
+        <p>Days</p>
+      </div>
+      <div class="time_input_wrap">    
+        <ng-multiselect-dropdown
+          [placeholder]="'Select Days'"
+          [settings]="dropdownSettings"
+          [data]="days"
+          [(ngModel)]="strategy.days"
+        >
+        </ng-multiselect-dropdown>
+      </div> -->
+
+      <div class="label ml-2">
+        <p>Broker Connection</p>
+      </div>
+      <div class="time_input_wrap">
+        <!-- <select name="" id="">
+          <option value="MTM">MTM</option>
+        </select>
+        <span>:</span> -->
+        <ng-multiselect-dropdown
+          [placeholder]="'Select Connection'"
+          [settings]="brokerSettings"
+          [data]="connections"
+          [(ngModel)]="strategy.brokers"
+        >
+        </ng-multiselect-dropdown>
+      </div>
+    </div>
+  </div>
+  <div class="time_wrap strategy_box">
+    <!-- <button class="time_box" *ngIf="!strategy.overallStoploss" (click)="strategy.overallStoploss=1000">
+      <div class="button_box" >
+        <img src="../../../../../assets/images/plus.png" alt="" />
+        <p>Strategy Stoploss</p>
+      </div>
+    </button> -->
+    <div class="time_box">
+      <div class="label">
+        <p>Max Openpositions</p>
+      </div>
+      <div class="time_input_wrap">
+        <!-- <select name="" id="">
+          <option value="MTM">MTM</option>
+        </select>
+        <span>:</span> -->
+        <input type="number" [(ngModel)]="strategy.maxpositions" placeholder="eg. 5" />
+      </div>
+    </div>
+
+    <!-- <button class="time_box" *ngIf="!strategy.overallTarget" (click)="strategy.overallTarget=1000">
+      <div class="button_box">
+        <img src="../../../../../assets/images/plus.png" alt="" />
+        <p>Strategy Target Profit</p>
+      </div>
+    </button> -->
+    <div class="time_box">
+      <div class="label">
+        <p>Maximum Opendays</p>
+      </div>
+      <div class="time_input_wrap">
+        <!-- <select name="" id="">
+          <option value="MTM">MTM</option>
+        </select>
+        <span>:</span> -->
+        <input type="number" [(ngModel)]="strategy.maxopendays" placeholder="eg.15" />
+      </div>
+    </div>
+  </div>
+
+  <div class="name_wrap">
+    <div class="input_box">
+      <label for="">Name</label>
+      <input type="text" [(ngModel)]="strategy.name" [ngModelOptions]="{ standalone: true }" placeholder="Enter Name" />
+    </div>
+    <div>
+      <button
+        [disabled]="!strategy.name || !strategy.orderStoploss || !strategy.margin || !strategy.maxpositions"
+        type="button"
+        class="btn btn-success mt-3 mt-sm-0 w-100 w-sm-auto"
+        (click)="saveStrategy()"
+        *ngIf="!strategyId"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+        [disabled]="!strategy.name || !strategy.orderStoploss || !strategy.margin || !strategy.maxpositions"
+        class="btn btn-success mt-3 mt-sm-0 w-100 w-sm-auto"
+        (click)="updateStrategy()"
+        *ngIf="strategyId"
+      >
+        Update
+      </button>
+    </div>
+  </div>
 </div>
