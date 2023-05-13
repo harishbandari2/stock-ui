@@ -81,10 +81,10 @@ export class ConnectionsComponent implements OnInit, OnDestroy {
     // if (conn.config) this.initForms(conn.config);
   }
   newConnection() {
-    if (this.appData.name === '5Paisa') {
-      this.toast.error('5Paisa App disabled currentley');
-      return;
-    }
+    // if (this.appData.name === '5Paisa') {
+    //   this.toast.error('5Paisa App disabled currentley');
+    //   return;
+    // }
     this.connectionId = null;
     this.connForm.reset();
   }

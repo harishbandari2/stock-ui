@@ -46,7 +46,7 @@ export class BuilderComponent implements OnInit, AfterViewInit {
     orderStoploss: null,
     orderTarget: null,
     margin: 100000,
-    maxpositions: null,
+    maxpositions: 8,
     maxopendays: null,
     sltoCost: false,
     status: 'DISABLED',
@@ -60,6 +60,7 @@ export class BuilderComponent implements OnInit, AfterViewInit {
     orderType: 'LIMIT',
     orderSide: 'BUY',
     symbol: '',
+    code: '',
     price: 0,
     stoploss: {
       type: null,
@@ -125,13 +126,18 @@ export class BuilderComponent implements OnInit, AfterViewInit {
     this.connections = [...this.connections, ...connections.data];
   }
 
-  addPosition(position: any) {
-    console.log(position, this.strategy);
+  async addPosition(position: any) {
     const leg: any = _.cloneDeep(position);
-    const order = this.prepareOrder(leg);
+    let scripInfo: any = await this.backendService.getService(Trade.ltp, leg.symbol).toPromise();
+    console.log(scripInfo);
+
+    leg.price = scripInfo.data.LastTradedPrice;
+    leg.code = scripInfo.data.ScripCode;
+    console.log(leg);
+
+    const order = this.prepareOrder(leg); // console.log(ltp);
 
     this.orderLegs.push(order);
-    console.log(position, order);
     setTimeout(() => {
       this.isSearchDisable = false;
       this.position.symbol = '';
@@ -141,6 +147,8 @@ export class BuilderComponent implements OnInit, AfterViewInit {
   prepareOrder(order: any) {
     const { margin, maxpositions, orderStoploss, orderTarget, type } = this.strategy;
     const orderMargin = margin / maxpositions;
+    console.log(margin, orderMargin);
+
     const qty = Math.floor(orderMargin / order.price);
     order.quantity = qty;
     order.type = type;
@@ -218,8 +226,6 @@ export class BuilderComponent implements OnInit, AfterViewInit {
   async stockSelected(stock: any) {
     if (stock.virtual) return;
     console.log(stock);
-    // let ltp: any = await this.backendService.getService(Trade.ltp, stock.ticker).toPromise();
-    this.position.price = 250;
     this.isSearchOpen = false;
     this.isSearchDisable = true;
     this.position.symbol = stock.ticker;

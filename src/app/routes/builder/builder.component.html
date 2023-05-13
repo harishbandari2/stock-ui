@@ -140,7 +140,12 @@
         </div>
       </div>
       <div class="form_input submit_btn">
-        <button [disabled]="!position.symbol" (click)="addPosition(position)">Add Position</button>
+        <button
+          [disabled]="!position.symbol || !strategy.maxpositions || !strategy.margin"
+          (click)="addPosition(position)"
+        >
+          Add Position
+        </button>
       </div>
     </div>
   </div>
@@ -212,6 +217,8 @@
                 <button *ngIf="order.orderType == 'MARKET'">CP~</button>
                 <button *ngIf="order.orderType == 'LIMIT'">Limit</button>
                 <input
+                  style="width: 62px;"
+                  [readonly]="order.orderType == 'MARKET'"
                   [(ngModel)]="order.price"
                   [ngModelOptions]="{ standalone: true }"
                   type="number"
